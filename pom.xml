@@ -5,142 +5,70 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>NEXUS</artifactId>
+    <artifactId>Future_Developers_LMS</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>NEXUS</name>
+    <name>Future_Developers_LMS</name>
     <packaging>war</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+
+        <jakartaee.api.version>10.0.0</jakartaee.api.version>
+        <jersey.version>3.1.7</jersey.version>
+        <hibernate.version>6.5.2.Final</hibernate.version>
+        <weld.version>5.1.2.Final</weld.version>
         <junit.version>5.10.2</junit.version>
     </properties>
 
     <dependencies>
-
-        <!-- ✅ Jakarta EE 11 (Provided by Tomcat 10 container) -->
+        <!-- https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl -->
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>11.0.0</version>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+            <version>10.0.0</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- ✅ Jersey (Jakarta compatible) -->
         <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet</artifactId>
-            <version>4.0.0-M2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
-            <version>4.0.0-M2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-cdi2-se</artifactId>
-            <version>4.0.0-M2</version>
-        </dependency>
-
-        <!-- ✅ Hibernate ORM -->
-        <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>7.0.4.Final</version>
-        </dependency>
-
-        <!-- ✅ EclipseLink JPA Provider (if using JPA separately) -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.jpa</artifactId>
-            <version>4.0.7</version>
-        </dependency>
-
-        <!-- ✅ Jakarta Bean Validation -->
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>9.0.1.Final</version>
-        </dependency>
-
-        <!-- ✅ Jakarta Faces -->
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.faces</artifactId>
-            <version>4.1.3</version>
-        </dependency>
-
-        <!-- ✅ CDI (Contexts and Dependency Injection) -->
-        <dependency>
-            <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se-core</artifactId>
-            <version>6.0.3.Final</version>
-        </dependency>
-
-        <!-- ✅ Jakarta NoSQL (Optional) -->
-        <dependency>
-            <groupId>jakarta.nosql</groupId>
-            <artifactId>jakarta.nosql-api</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-
-        <!-- ✅ MVC API -->
-        <dependency>
-            <groupId>jakarta.mvc</groupId>
-            <artifactId>jakarta.mvc-api</artifactId>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
             <version>3.0.0</version>
         </dependency>
-
-        <!-- ✅ Corrected WebSocket (Jakarta version) -->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.tyrus.bundles</groupId>-->
-<!--            <artifactId>tyrus-standalone-client-jakarta</artifactId>-->
-<!--            <version>2.1.3</version>-->
-<!--        </dependency>-->
-
-        <!-- ✅ JAXB -->
+        <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>4.0.5</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version> 6.0.0</version>
+            <scope>provided</scope>
         </dependency>
-
-        <!-- ✅ JUnit 5 -->
+        <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+        <!-- https://mvnrepository.com/artifact/jakarta.annotation/jakarta.annotation-api -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.1.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
-            <!-- WAR Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
-            </plugin>
-
-            <!-- Compiler Plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <source>22</source>
-                    <target>22</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>
