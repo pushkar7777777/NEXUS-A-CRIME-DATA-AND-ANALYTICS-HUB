@@ -1,234 +1,234 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="org.example.nexus.dao.PoliceRegistrationDAO"%>
+<%@ page import="org.example.nexus.model.PoliceStation"%>
+<%@ page import="java.util.List"%>
+
+<%
+    PoliceRegistrationDAO psdao = new PoliceRegistrationDAO();
+    List<PoliceStation> stations = psdao.getAllStations();
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Crime Data & Analysis Hub</title>
+    <title>Register – Nexus Crime Data Hub</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-    <!-- Google Fonts (Inter) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- Custom CSS -->
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-        }
+        html { font-family: 'Inter', sans-serif; }
 
-        /* --- Navigation --- */
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: #003366 !important;
+        @keyframes gradientBG {
+            0% { background-position:0% 50% }
+            50% { background-position:100% 50% }
+            100% { background-position:0% 50% }
         }
-
-        .navbar {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            background-color: #ffffff;
+        .animated-bg {
+            background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #004d7a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
         }
-
-        .btn-primary {
-            background-color: #0055a4;
-            border-color: #0055a4;
+        .form-input {
+            transition: all 0.3s ease;
         }
-
-        .btn-primary:hover {
-            background-color: #004488;
-            border-color: #004488;
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(44, 83, 100, 0.4);
+            border-color: #2c5364;
         }
-
-        .register-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 0; /* More padding for longer form */
-        }
-
-        .register-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            max-width: 550px; /* Wider card for more fields */
-            width: 100%;
-        }
-
-        .register-card .card-header {
-            background-color: #003366;
-            color: white;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .register-card .card-header h2 {
-            margin: 0;
-            font-weight: 600;
-        }
-
-        .register-card .card-body {
-            padding: 2.5rem;
-        }
-
-        .form-label {
-            font-weight: 500;
-            color: #333;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #0055a4;
-            box-shadow: 0 0 0 0.25rem rgba(0, 85, 164, 0.25);
-        }
-
-        .login-link {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #555;
-        }
-
-        .login-link a {
-            font-weight: 600;
-            color: #0055a4;
-            text-decoration: none;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-
+        .hidden { display: none !important; }
     </style>
 </head>
-<body>
 
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg sticky-top">
-    <div class="container">
-        <a class="navbar-brand" href="../../index.jsp">
-            <!-- SVG Icon for Brand -->
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="d-inline-block align-text-top me-2">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="#0055a4" stroke-width="2"/>
-                <path d="M12 2L12 10M12 10L8 7M12 10L16 7" stroke="#0055a4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M3.5 11C2.5 13 2 15 2 17C2 21 6 23 12 23C18 23 22 21 22 17C22 15 21.5 13 20.5 11" stroke="#0055a4" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Crime Data Hub
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="../../index.jsp">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="login.jsp">Login</a>
-                </li>
-            </ul>
-        </div>
+<body class="animated-bg min-h-screen flex items-center justify-center overflow-hidden p-4">
+
+<div class="register-card max-w-2xl w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden animate__animated animate__zoomIn">
+
+    <div class="card-header bg-gradient-to-r from-gray-800 to-blue-900 text-white p-6 text-center">
+        <h2 class="text-3xl font-bold"><i class="bi bi-person-fill-lock mr-2"></i>Create Your Nexus Account</h2>
     </div>
-</nav>
 
-<!-- Main Register Section -->
-<div class="container register-container">
-    <div class="card register-card">
-        <div class="card-header">
-            <h2>Create Civilian Account</h2>
+    <div class="p-6 sm:p-8">
+
+        <% String error = request.getParameter("error"); if (error != null) { %>
+        <div class="bg-red-100 border-l-4 border-red-600 p-4 text-red-800 font-semibold rounded-lg mb-6">
+            <i class="bi bi-exclamation-triangle-fill mr-2"></i> <%= error %>
         </div>
-        <div class="card-body">
-            <!-- In a real JSP/Servlet project, the action would be 'AuthServlet' or 'RegisterServlet' -->
-            <form id="registerForm" method="POST" action="register">
+        <% } %>
 
-                <div class="row">
-                    <!-- Full Name -->
-                    <div class="col-md-12 mb-3">
-                        <label for="fullName" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="fullName" name="fullName" required>
-                    </div>
-                </div>
+        <!-- TABS -->
+        <div class="flex mb-6 space-x-3">
+            <button id="tab-civilian" class="tab-btn flex-1 py-2 rounded-xl font-semibold border border-gray-400 bg-white text-gray-700"
+                    onclick="switchForm('civilianForm')">Civilian</button>
+            <button id="tab-police" class="tab-btn flex-1 py-2 rounded-xl font-semibold border border-gray-400 bg-white text-gray-700"
+                    onclick="switchForm('policeForm')">Police</button>
+            <button id="tab-admin" class="tab-btn flex-1 py-2 rounded-xl font-semibold border border-gray-400 bg-white text-gray-700"
+                    onclick="switchForm('adminForm')">Admin</button>
+        </div>
 
-                <!-- Email Address -->
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                </div>
+        <!-- ================= CIVILIAN FORM ================= -->
+        <form id="civilianForm" action="<%= request.getContextPath() %>/civilian_register" method="post" class="space-y-4">
 
-                <!-- Phone Number -->
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" required>
-                </div>
+            <h5 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2">
+                General Public Registration <i class="bi bi-person-circle text-blue-600"></i>
+            </h5>
 
-                <div class="row">
-                    <!-- Password -->
-                    <div class="col-md-6 mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-
-                    <!-- Confirm Password -->
-                    <div class="col-md-6 mb-3">
-                        <label for="confirmPassword" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-                    </div>
-                </div>
-
-                <!-- Terms and Conditions -->
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" value="" id="agreeTerms" required>
-                    <label class="form-check-label" for="agreeTerms" style="font-size: 0.9rem;">
-                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
-                    </label>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary w-100 btn-lg">
-                    Create Account
-                </button>
-
-            </form>
-
-            <!-- Login Link -->
-            <div class="login-link">
-                Already have an account? <a href="login.jsp">Login Now</a>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input type="text" name="full_name" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
             </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+                </div>
+                <div>
+                    <label>Phone</label>
+                    <input type="text" name="phone" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+                </div>
+            </div>
+
+            <label>Password</label>
+            <input type="password" name="password" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+
+            <label>National ID</label>
+            <input type="text" name="national_id" class="form-input w-full p-3 border border-gray-300 rounded-lg">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label>Date of Birth</label>
+                    <input type="date" name="dob" class="form-input w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label>Gender</label>
+                    <select name="gender" class="form-input w-full p-3 border border-gray-300 rounded-lg">
+                        <option>Male</option><option>Female</option><option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="w-full py-3 mt-6 bg-gradient-to-r from-blue-700 to-gray-800 text-white rounded-xl font-bold">
+                Register as Civilian
+            </button>
+        </form>
+
+        <!-- ================= POLICE FORM ================= -->
+        <form id="policeForm" class="hidden space-y-4" action="<%= request.getContextPath() %>/police_register" method="post">
+
+            <h5 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2">
+                Police Registration <i class="bi bi-shield-fill-check text-green-600"></i>
+            </h5>
+
+            <div>
+                <label>Full Name</label>
+                <input type="text" name="full_name" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+                </div>
+
+                <div>
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+                </div>
+            </div>
+
+            <label>Password</label>
+            <input type="password" name="password" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label>Rank</label>
+                    <input type="text" name="rank" class="form-input w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+
+                <div>
+                    <label>Police Station</label>
+                    <select name="police_station_id" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+                        <option value="">-- Select Station --</option>
+
+                        <% for (PoliceStation ps : stations) { %>
+                        <option value="<%= ps.getPoliceStationId() %>">
+                            <%= ps.getPoliceStationId() %> – <%= ps.getStationName() %>
+                        </option>
+                        <% } %>
+
+                    </select>
+                </div>
+            </div>
+
+            <label>Joining Code</label>
+            <input type="text" name="joining_code" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+
+            <button type="submit"
+                    class="w-full py-3 mt-6 bg-gradient-to-r from-blue-700 to-gray-800 text-white rounded-xl font-bold">
+                Register as Police
+            </button>
+        </form>
+
+        <!-- ================= ADMIN FORM ================= -->
+        <form id="adminForm" class="hidden space-y-4" action="<%= request.getContextPath() %>/admin_register" method="post">
+
+            <h5 class="text-xl font-bold text-gray-700 mb-4 border-b pb-2">
+                Admin Registration <i class="bi bi-gear-fill text-yellow-600"></i>
+            </h5>
+
+            <label>Full Name</label>
+            <input type="text" name="full_name" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+
+            <label>Email</label>
+            <input type="email" name="email" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+
+            <label>Password</label>
+            <input type="password" name="password" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+
+            <label>Role</label>
+            <select name="role" class="form-input w-full p-3 border border-gray-300 rounded-lg">
+                <option value="SUPER_ADMIN">Super Admin</option>
+                <option value="ANALYST">Analyst</option>
+                <option value="AUDITOR">Auditor</option>
+            </select>
+
+            <label>Secret Admin Code</label>
+            <input type="text" name="secret_admin_code" class="form-input w-full p-3 border border-gray-300 rounded-lg" required>
+
+            <button type="submit"
+                    class="w-full py-3 mt-6 bg-gradient-to-r from-blue-700 to-gray-800 text-white rounded-xl font-bold">
+                Register as Admin
+            </button>
+        </form>
+
+        <div class="text-center mt-8 text-sm text-gray-600">
+            Already have an account?
+            <a href="login.jsp" class="font-bold text-blue-700">Login</a>
         </div>
+
     </div>
 </div>
 
-<!-- Bootstrap JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-<!-- Custom JS (for validation) -->
 <script>
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent actual form submission for this demo
+    function switchForm(formId) {
+        document.querySelectorAll("form").forEach(f => f.classList.add("hidden"));
+        document.getElementById(formId).classList.remove("hidden");
 
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
+        document.querySelectorAll(".tab-btn").forEach(btn =>
+            btn.classList.remove("bg-blue-700", "text-white", "border-blue-700")
+        );
 
-        if (password !== confirmPassword) {
-            alert("Passwords do not match."); // Using alert for demo, replace with modal/inline error
-            console.log("Passwords do not match.");
-            return; // Stop the submission
-        }
+        const activeBtn = document.getElementById("tab-" + formId.replace("Form", ""));
+        activeBtn.classList.add("bg-blue-700", "text-white", "border-blue-700");
+    }
 
-        console.log('Registration form submitted:
-        Name: ${document.getElementById("fullName").value}
-            Email: ${document.getElementById("email").value}
-                Phone: ${document.getElementById("phone").value}
-                    ');
-
-        // In a real application, you'd send this to your servlet.
-        // After successful registration, you might redirect to the login page.
-        console.log('Redirecting to login page...');
-        // window.location.href = 'login.html';
-    });
+    document.addEventListener("DOMContentLoaded", () => switchForm("civilianForm"));
 </script>
+
 </body>
 </html>

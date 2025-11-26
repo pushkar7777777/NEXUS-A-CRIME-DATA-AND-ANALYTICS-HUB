@@ -3,387 +3,440 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Crime Data Hub</title>
+    <title>Admin Dashboard - Nexus Hub</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Google Fonts (Inter) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome (for icons) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Chart.js -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Custom CSS for Dashboard -->
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f7f6;
-            display: flex;
-            min-height: 100vh;
+        /* --- BRAND COLORS --- */
+        :root {
+            --nexus-dark: #1C3144;      /* Primary Dark Blue/Teal (Sidebar/Headings) */
+            --nexus-accent: #00A3FF;    /* Bright Blue/Cyan Accent (Links/Primary Action) */
+            --nexus-light: #F0F4F8;     /* Light background */
+            --sidebar-hover: #004d7a;
+            --sidebar-active: #0055a4;
         }
 
-        /* --- Sidebar --- */
+        /* --- GLOBAL STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--nexus-light);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
         .sidebar {
-            width: 260px;
-            background-color: #212529; /* Dark charcoal/black for Admin */
+            width: 280px;
+            /* Using a darker gradient based on the new dark color */
+            background: linear-gradient(180deg, var(--nexus-dark), #203a43, #2c5364);
             color: #ffffff;
             position: fixed;
             height: 100%;
             overflow-y: auto;
             transition: all 0.3s;
             z-index: 1000;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
 
         .sidebar-header {
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             text-align: center;
-            border-bottom: 1px solid #343a40;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.1);
         }
 
-        .sidebar-header h3 {
-            margin: 0;
-            font-weight: 700;
+        .nexus-brand {
+            font-weight: 800;
             font-size: 1.5rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .nexus-brand svg path, .nexus-brand svg circle {
+            stroke: var(--nexus-accent); /* Accent color for the icon */
+            fill: var(--nexus-accent);
+        }
+        .nexus-brand svg path[d*="8l-3 5"] { /* Connections */
+            stroke: #fff;
+        }
+
+        .sidebar-nav {
+            padding-top: 1rem;
         }
 
         .sidebar-nav .nav-link {
-            color: #e0e0e0;
-            padding: 1rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            padding: 1rem 2rem;
             font-weight: 500;
             display: flex;
             align-items: center;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
         }
 
         .sidebar-nav .nav-link i {
             margin-right: 1rem;
-            width: 20px;
+            width: 25px;
             text-align: center;
+            transition: transform 0.3s;
         }
 
         .sidebar-nav .nav-link:hover {
-            background-color: #343a40;
+            background-color: rgba(255,255,255,0.05);
             color: #ffffff;
+            padding-left: 2.5rem;
+        }
+
+        .sidebar-nav .nav-link:hover i {
+            transform: scale(1.1);
+            color: var(--nexus-accent); /* Use Accent color on hover */
         }
 
         .sidebar-nav .nav-link.active {
-            background-color: #0055a4; /* Primary blue as accent */
+            background: var(--sidebar-active);
             color: #ffffff;
             font-weight: 600;
+            border-left: 4px solid var(--nexus-accent);
+            /* Soft shadow using the accent color */
+            box-shadow: inset 5px 0 10px -5px rgba(0, 163, 255, 0.4);
         }
 
         .sidebar-footer {
             position: absolute;
             bottom: 0;
             width: 100%;
-            padding: 1rem 1.5rem;
-            background-color: #000000;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.2);
+        }
+        .sidebar-footer .btn-outline-light {
+            border-color: rgba(255,255,255,0.3);
+            font-weight: 600;
         }
 
-        /* --- Main Content --- */
+        /* --- MAIN CONTENT --- */
         .main-content {
-            margin-left: 260px;
-            width: calc(100% - 260px);
+            margin-left: 280px;
+            width: calc(100% - 280px);
             transition: all 0.3s;
-            padding: 0;
         }
 
-        /* --- Top Bar --- */
+        /* --- TOP NAVBAR --- */
         .top-navbar {
             background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 0.75rem 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
             position: sticky;
             top: 0;
             z-index: 999;
         }
-
-        .navbar-toggler {
-            border: none;
-            font-size: 1.5rem;
+        .bell-shake:hover {
+            animation: shake 0.5s infinite;
         }
-
-        .user-profile {
+        .top-navbar .btn-nexus {
+            background: var(--nexus-accent);
+            border: 1px solid var(--nexus-accent);
+            color: var(--nexus-dark);
             font-weight: 600;
-            color: #333;
+            transition: all 0.3s;
+        }
+        .top-navbar .btn-nexus:hover {
+            background: #008be6;
+            border-color: #008be6;
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 163, 255, 0.3);
         }
 
-        /* --- Content Area --- */
-        .content-area {
-            padding: 2rem;
-        }
-
-        /* Stat Cards */
+        /* --- STAT CARDS --- */
         .stat-card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            background: #ffffff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             padding: 1.5rem;
             display: flex;
             align-items: center;
-            margin-bottom: 1rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
         }
 
-        .stat-card .card-icon {
-            font-size: 2.5rem;
-            padding: 1rem;
+        .stat-card:hover {
+            transform: translateY(-5px); /* Less dramatic lift */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .card-icon {
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
-            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+            opacity: 0.9;
         }
 
-        .stat-card .card-info h5 {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 0.25rem;
-        }
+        /* New Color Mapping for Consistency */
+        .icon-users { background-color: #e0f7fa; color: #00bcd4; } /* Cyan */
+        .icon-police { background-color: #f3e5f5; color: #9c27b0; } /* Purple */
+        .icon-complaints { background-color: #ffebee; color: #d32f2f; } /* Red */
+        .icon-dept { background-color: #e8f5e9; color: #4caf50; } /* Green */
 
-        .stat-card .card-info .stat-number {
-            font-size: 2rem;
+        .stat-card h6 {
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
             font-weight: 700;
-            color: #333;
+            color: #888;
+        }
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--nexus-dark);
         }
 
-        .icon-users { background-color: #e6f0ff; color: #0055a4; }
-        .icon-complaints { background-color: #fff4e6; color: #ff9800; }
-        .icon-police { background-color: #e0e7ef; color: #343a40; }
-        .icon-dept { background-color: #e6f7ec; color: #28a745; }
-
-        /* Main Card (for tables, charts, etc.) */
+        /* --- MAIN CARDS (Charts/Tables) --- */
         .main-card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             padding: 1.5rem;
             height: 100%;
+            background: white;
+            transition: transform 0.3s;
         }
 
-        .main-card .card-header {
-            background-color: transparent;
+        .main-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .card-header-custom {
             border-bottom: 1px solid #eee;
-            padding: 0 0 1rem 0;
+            padding-bottom: 1rem;
             margin-bottom: 1rem;
         }
-
-        .main-card .card-header h4 {
-            font-weight: 600;
-            color: #212529;
-            margin: 0;
+        .card-header-custom h5 {
+            color: var(--nexus-dark);
+            font-weight: 700;
         }
 
-        .btn-primary {
-            background-color: #0055a4;
-            border-color: #0055a4;
+        .table-hover tbody tr:hover {
+            background-color: var(--nexus-light);
+            transform: none; /* Keep table rows steady */
+            box-shadow: none;
         }
 
-        .btn-primary:hover {
-            background-color: #004488;
-            border-color: #004488;
+        /* --- MODAL --- */
+        .modal-header-nexus {
+            background: linear-gradient(135deg, var(--nexus-dark), #2c5364);
         }
 
-        .badge-status {
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 0.4em 0.7em;
-        }
-
-        /* --- Responsive --- */
         @media (max-width: 991.98px) {
-            .sidebar {
-                margin-left: -260px;
-            }
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-            .sidebar.active {
-                margin-left: 0;
-            }
+            .sidebar { margin-left: -280px; }
+            .main-content { margin-left: 0; width: 100%; }
+            .sidebar.active { margin-left: 0; }
         }
-
     </style>
 </head>
 <body>
 
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <h3><i class="fas fa-cogs"></i> Admin Panel</h3>
+        <div class="nexus-brand animate__animated animate__fadeIn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--nexus-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <circle cx="12" cy="8" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
+                <circle cx="9" cy="13" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
+                <circle cx="15" cy="13" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
+                <path d="M12 8l-3 5" stroke="#fff"/>
+                <path d="M12 8l3 5" stroke="#fff"/>
+                <path d="M9 13h6" stroke="#fff"/>
+            </svg>
+            NEXUS
+        </div>
     </div>
-    <ul class="nav flex-column sidebar-nav p-3">
+
+    <ul class="nav flex-column sidebar-nav">
         <li class="nav-item">
             <a class="nav-link active" href="#">
-                <i class="fas fa-tachometer-alt"></i>
-                Dashboard
+                <i class="fas fa-tachometer-alt"></i> Dashboard
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">
-                <i class="fas fa-users-cog"></i>
-                User Management
+                <i class="fas fa-users-cog"></i> User Management
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">
-                <i class="fas fa-tasks"></i>
-                Complaint Monitor
+                <i class="fas fa-tasks"></i> Complaint Monitor
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">
-                <i class="fas fa-chart-pie"></i>
-                Analytics & Reports
+                <i class="fas fa-chart-line"></i> Advanced Analytics
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">
-                <i class="fas fa-building"></i>
-                Manage Departments
+                <i class="fas fa-building"></i> Station/Dept.
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">
-                <i class="fas fa-clipboard-list"></i>
-                System Logs
+                <i class="fas fa-clipboard-list"></i> System Logs
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#alertModal">
-                <i class="fas fa-bullhorn"></i>
-                Send Alert
+                <i class="fas fa-bullhorn"></i> Broadcast Alert
             </a>
         </li>
     </ul>
+
     <div class="sidebar-footer">
-        <a href="index.html" class="btn btn-outline-light w-100">
+        <a href="../../index.jsp" class="btn btn-outline-light w-100 btn-sm fw-bold">
             <i class="fas fa-sign-out-alt me-2"></i> Logout
         </a>
     </div>
 </div>
 
-<!-- Main Content Wrapper -->
 <div class="main-content" id="main-content">
 
-    <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg top-navbar">
         <div class="container-fluid">
-            <!-- Mobile Menu Toggle -->
-            <button class="navbar-toggler" type="button" id="sidebar-toggle">
-                <i class="fas fa-bars"></i>
+            <button class="btn border-0" id="sidebar-toggle">
+                <i class="fas fa-bars fs-4 text-secondary"></i>
             </button>
 
-            <!-- Welcome Message -->
-            <span class="navbar-text user-profile d-none d-md-block">
-                    Welcome, Administrator!
-                </span>
-
-            <!-- Quick Actions -->
-            <div class="ms-auto d-flex align-items-center">
-                <a href="#" class="btn btn-primary btn-sm me-3">
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <a href="#" class="btn btn-nexus btn-sm me-2 shadow-sm">
                     <i class="fas fa-download me-1"></i> Generate Report
                 </a>
-                <i class="fas fa-bell fs-5 text-secondary"></i>
+                <div class="dropdown">
+                    <a href="#" class="text-secondary position-relative bell-shake" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">9+</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 animate__animated animate__fadeIn">
+                        <li><h6 class="dropdown-header">System Alerts</h6></li>
+                        <li><a class="dropdown-item small" href="#">Server Load High (90%)</a></li>
+                        <li><a class="dropdown-item small" href="#">New Dept. Created</a></li>
+                    </ul>
+                </div>
+                <div class="d-none d-md-flex align-items-center gap-2">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=1C3144&color=fff" class="rounded-circle shadow-sm" width="35" height="35" alt="Admin">
+                    <span class="fw-semibold small text-secondary">Administrator</span>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content Area -->
-    <main class="content-area">
+    <div class="container-fluid p-4">
 
-        <!-- Dashboard Title -->
-        <h1 class="h3 mb-4" style="font-weight: 600; color: #212529;">System Dashboard</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeInDown">
+            <h3 class="fw-bold text-dark m-0"><i class="fas fa-chart-area me-2 text-secondary"></i> System Overview</h3>
+            <div class="text-muted small">Last updated: <span id="liveClock">--:--</span></div>
+        </div>
 
-        <!-- Stat Cards -->
-        <div class="row">
-            <div class="col-lg-3 col-md-6">
+        <div class="row g-4 mb-4">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
                 <div class="stat-card">
                     <div class="card-icon icon-users">
                         <i class="fas fa-users"></i>
                     </div>
-                    <div class="card-info">
-                        <h5 class="text-uppercase">Total Civilians</h5>
-                        <span class="stat-number">1,450</span>
+                    <div>
+                        <h6 class="text-uppercase mb-1 small fw-bold">Total Civilians</h6>
+                        <div class="stat-number counter" data-target="1450">0</div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
                 <div class="stat-card">
                     <div class="card-icon icon-police">
                         <i class="fas fa-user-shield"></i>
                     </div>
-                    <div class="card-info">
-                        <h5 class="text-uppercase">Total Police</h5>
-                        <span class="stat-number">210</span>
+                    <div>
+                        <h6 class="text-uppercase mb-1 small fw-bold">Police Force</h6>
+                        <div class="stat-number counter" data-target="210">0</div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
                 <div class="stat-card">
                     <div class="card-icon icon-complaints">
-                        <i class="fas fa-file-alt"></i>
+                        <i class="fas fa-file-contract"></i>
                     </div>
-                    <div class="card-info">
-                        <h5 class="text-uppercase">Total Complaints</h5>
-                        <span class="stat-number">3,890</span>
+                    <div>
+                        <h6 class="text-uppercase mb-1 small fw-bold">Total Cases</h6>
+                        <div class="stat-number counter" data-target="3890">0</div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
                 <div class="stat-card">
                     <div class="card-icon icon-dept">
                         <i class="fas fa-building"></i>
                     </div>
-                    <div class="card-info">
-                        <h5 class="text-uppercase">Departments</h5>
-                        <span class="stat-number">15</span>
+                    <div>
+                        <h6 class="text-uppercase mb-1 small fw-bold">Total Stations</h6>
+                        <div class="stat-number counter" data-target="15">0</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content Row -->
-        <div class="row mt-4">
-
-            <!-- Crime Trend Analysis -->
-            <div class="col-lg-7 mb-4">
+        <div class="row g-4 mb-4">
+            <div class="col-lg-7" data-aos="fade-right">
                 <div class="main-card">
-                    <div class="card-header">
-                        <h4><i class="fas fa-chart-line me-2"></i>Crime Trend Analysis (Last 6 Months)</h4>
+                    <div class="card-header-custom">
+                        <h5 class="fw-bold mb-0"><i class="fas fa-chart-line me-2"></i>Crime Trends (Last 6 Months)</h5>
                     </div>
-                    <canvas id="crimeTrendChart" style="max-height: 350px;"></canvas>
+                    <canvas id="crimeTrendChart" style="max-height: 300px;"></canvas>
                 </div>
             </div>
-
-            <!-- Complaint Status -->
-            <div class="col-lg-5 mb-4">
+            <div class="col-lg-5" data-aos="fade-left">
                 <div class="main-card">
-                    <div class="card-header">
-                        <h4><i class="fas fa-chart-pie me-2"></i>Complaints by Status</h4>
+                    <div class="card-header-custom">
+                        <h5 class="fw-bold mb-0"><i class="fas fa-chart-pie me-2"></i>Case Status Distribution</h5>
                     </div>
-                    <canvas id="complaintStatusChart" style="max-height: 350px;"></canvas>
+                    <div style="height: 300px; display: flex; justify-content: center;">
+                        <canvas id="complaintStatusChart"></canvas>
+                    </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- User Management Table -->
-        <div class="row mt-2">
-            <div class="col-lg-12">
+        <div class="row" data-aos="fade-up">
+            <div class="col-12">
                 <div class="main-card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4><i class="fas fa-users-cog me-2"></i>User Management</h4>
-                        <a href="#" class="btn btn-outline-primary btn-sm">View All Users</a>
+                    <div class="card-header-custom">
+                        <h5 class="fw-bold mb-0"><i class="fas fa-users-cog me-2"></i>Recent User Activity</h5>
+                        <button class="btn btn-sm btn-outline-dark fw-bold">Manage All</button>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-light">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
                             <tr>
-                                <th>User ID</th>
+                                <th class="ps-4">User ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Role</th>
@@ -392,37 +445,34 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td><strong>#CIV-101</strong></td>
-                                <td>Civilian Name</td>
-                                <td>civilian@email.com</td>
-                                <td><span class="badge bg-light text-dark">Civilian</span></td>
-                                <td><span class="badge rounded-pill bg-success badge-status">Active</span></td>
+                            <tr data-aos="fade-left" data-aos-delay="500">
+                                <td class="ps-4 fw-bold text-primary">#CIV-101</td>
+                                <td>Alice Green</td>
+                                <td>alice@email.com</td>
+                                <td><span class="badge bg-info text-dark border border-info-subtle fw-normal">Civilian</span></td>
+                                <td><span class="badge bg-success rounded-pill">Active</span></td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-warning">Suspend</button>
-                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button class="btn btn-sm btn-outline-secondary border"><i class="fas fa-ellipsis-h"></i></button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td><strong>#POL-55</strong></td>
-                                <td>Officer Sharma</td>
-                                <td>osharma@police.gov</td>
-                                <td><span class="badge bg-primary">Police</span></td>
-                                <td><span class="badge rounded-pill bg-success badge-status">Active</span></td>
+                            <tr data-aos="fade-left" data-aos-delay="600">
+                                <td class="ps-4 fw-bold text-primary">#POL-055</td>
+                                <td>Officer Ray</td>
+                                <td>ray@police.gov</td>
+                                <td><span class="badge bg-dark fw-normal">Police</span></td>
+                                <td><span class="badge bg-success rounded-pill">Active</span></td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-warning">Suspend</button>
-                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button class="btn btn-sm btn-outline-secondary border"><i class="fas fa-ellipsis-h"></i></button>
                                 </td>
                             </tr>
-                            <tr>
-                                <td><strong>#CIV-102</strong></td>
-                                <td>Another User</td>
-                                <td>user2@email.com</td>
-                                <td><span class="badge bg-light text-dark">Civilian</span></td>
-                                <td><span class="badge rounded-pill bg-warning text-dark badge-status">Suspended</span></td>
+                            <tr data-aos="fade-left" data-aos-delay="700">
+                                <td class="ps-4 fw-bold text-primary">#CIV-102</td>
+                                <td>Bob Smith</td>
+                                <td>bob@email.com</td>
+                                <td><span class="badge bg-info text-dark border border-info-subtle fw-normal">Civilian</span></td>
+                                <td><span class="badge bg-warning text-dark rounded-pill">Suspended</span></td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-success">Activate</button>
-                                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    <button class="btn btn-sm btn-outline-secondary border"><i class="fas fa-ellipsis-h"></i></button>
                                 </td>
                             </tr>
                             </tbody>
@@ -432,142 +482,136 @@
             </div>
         </div>
 
-    </main>
+    </div>
 </div>
 
-<!-- Send Alert Modal -->
-<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+<div class="modal fade" id="alertModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form id="alertForm" action="send-alert-servlet" method="POST">
-                <div class="modal-header" style="background-color: #212529; color: white;">
-                    <h5 class="modal-title" id="alertModalLabel"><i class="fas fa-bullhorn me-2"></i>Broadcast System Alert</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    <!-- Target Audience -->
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header text-white modal-header-nexus">
+                <h5 class="modal-title fw-bold"><i class="fas fa-broadcast-tower me-2"></i>Broadcast Alert</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="alertForm">
                     <div class="mb-3">
-                        <label for="alertTarget" class="form-label">Target Audience</label>
-                        <select class="form-select" id="alertTarget" name="alertTarget" required>
-                            <option value="all">All Users (Civilians & Police)</option>
+                        <label class="form-label fw-bold small text-secondary">Target Audience</label>
+                        <select class="form-select">
+                            <option value="all">Everyone</option>
                             <option value="civilian">Civilians Only</option>
                             <option value="police">Police Only</option>
                         </select>
                     </div>
-
-                    <!-- Alert Title -->
                     <div class="mb-3">
-                        <label for="alertTitle" class="form-label">Alert Title</label>
-                        <input type="text" class="form-control" id="alertTitle" name="alertTitle" placeholder="e.g., System Maintenance" required>
+                        <label class="form-label fw-bold small text-secondary">Title</label>
+                        <input type="text" class="form-control" placeholder="Alert Headline">
                     </div>
-
-                    <!-- Alert Message -->
                     <div class="mb-3">
-                        <label for="alertMessage" class="form-label">Message</label>
-                        <textarea class="form-control" id="alertMessage" name="alertMessage" rows="4" placeholder="Enter alert details..."></textarea>
+                        <label class="form-label fw-bold small text-secondary">Message</label>
+                        <textarea class="form-control" rows="3" placeholder="Type your message..."></textarea>
                     </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger"><i class="fas fa-paper-plane me-2"></i>Send Broadcast</button>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="modal-footer bg-light border-0">
+                <button type="button" class="btn btn-link text-secondary text-decoration-none" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger px-4"><i class="fas fa-paper-plane me-2"></i>Broadcast</button>
+            </div>
         </div>
     </div>
 </div>
 
-
-<!-- Bootstrap JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-<!-- Custom JS for Dashboard -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Sidebar Toggle
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebar-toggle');
+    AOS.init({ duration: 800, once: true });
 
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-            });
+    // Sidebar Toggle
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.querySelector('.main-content').style.marginLeft =
+            document.querySelector('.main-content').style.marginLeft === '0px' ? '280px' : '0px';
+    });
+
+    // Clock
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('liveClock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }, 1000);
+
+    // Counter Animation
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const increment = target / 50;
+        const updateCounter = () => {
+            const c = +counter.innerText;
+            if(c < target) {
+                counter.innerText = Math.ceil(c + increment);
+                setTimeout(updateCounter, 20);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCounter();
+    });
+
+    // --- CHARTS ---
+
+    // 1. Crime Trend Chart (Line)
+    const ctxTrend = document.getElementById('crimeTrendChart').getContext('2d');
+    new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+            labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+            datasets: [{
+                label: 'Theft',
+                // Using a darker blue for visibility
+                data: [120, 150, 140, 160, 180, 170],
+                borderColor: '#0d47a1',
+                backgroundColor: 'rgba(13, 71, 161, 0.1)',
+                fill: true,
+                tension: 0.4
+            }, {
+                label: 'Cybercrime',
+                data: [80, 90, 110, 100, 130, 140],
+                borderColor: '#ff6f00',
+                backgroundColor: 'rgba(255, 111, 0, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 2000, easing: 'easeOutQuart' },
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true, grid: { borderDash: [5, 5] } } }
         }
+    });
 
-        // --- Charts ---
-
-        // 1. Crime Trend Chart (Line)
-        const ctxTrend = document.getElementById('crimeTrendChart');
-        if (ctxTrend) {
-            new Chart(ctxTrend, {
-                type: 'line',
-                data: {
-                    labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-                    datasets: [{
-                        label: 'Theft',
-                        data: [120, 150, 140, 160, 180, 170],
-                        borderColor: '#0055a4',
-                        backgroundColor: 'rgba(0, 85, 164, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }, {
-                        label: 'Cybercrime',
-                        data: [80, 90, 110, 100, 130, 140],
-                        borderColor: '#ff9800',
-                        backgroundColor: 'rgba(255, 152, 0, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-        }
-
-        // 2. Complaint Status Chart (Doughnut)
-        const ctxStatus = document.getElementById('complaintStatusChart');
-        if (ctxStatus) {
-            new Chart(ctxStatus, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Resolved', 'Under Investigation', 'Filed', 'Closed'],
-                    datasets: [{
-                        label: 'Complaint Status',
-                        data: [1800, 800, 400, 890],
-                        backgroundColor: [
-                            '#28a745', // green
-                            '#ff9800', // orange
-                            '#0055a4', // blue
-                            '#6c757d'  // grey
-                        ],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                }
-            });
-        }
-
-        // Handle Alert Form Submission (Demo)
-        const alertForm = document.getElementById('alertForm');
-        if (alertForm) {
-            alertForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                console.log('Alert form submitted.');
-                var modal = bootstrap.Modal.getInstance(document.getElementById('alertModal'));
-                modal.hide();
-                alert('System-wide alert has been broadcast!');
-            });
+    // 2. Complaint Status Chart (Doughnut)
+    const ctxStatus = document.getElementById('complaintStatusChart').getContext('2d');
+    new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: ['Resolved', 'Under Investigation', 'Pending Review', 'Closed'],
+            datasets: [{
+                data: [1800, 800, 400, 890],
+                // Updated colors to match Bootstrap palette for consistency
+                backgroundColor: ['#28a745', '#ffc107', '#007bff', '#6c757d'],
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { animateScale: true, animateRotate: true },
+            plugins: { legend: { position: 'bottom' } },
+            cutout: '70%'
         }
     });
 </script>
+
 </body>
 </html>
