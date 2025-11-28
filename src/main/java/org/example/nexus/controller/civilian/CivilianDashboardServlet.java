@@ -23,13 +23,13 @@ public class CivilianDashboardServlet extends HttpServlet {
             return;
         }
 
-        int regId = (int) session.getAttribute("user_id");
+        int reg_Id = (int) session.getAttribute("user_id");
 
         // Fetch complaint details for logged-in civilian
-        session.setAttribute("complaints", service.getComplaintsByUser(regId));
-        session.setAttribute("totalFiled", service.getTotalFiled(regId));
-        session.setAttribute("inProgress", service.getInProgress(regId));
-        session.setAttribute("resolved", service.getResolved(regId));
+        session.setAttribute("complaints", service.getComplaintsByUser(reg_Id));
+        session.setAttribute("totalFiled", service.getTotalFiled(reg_Id));
+        session.setAttribute("inProgress", service.getInProgress(reg_Id));
+        session.setAttribute("resolved", service.getResolved(reg_Id));
 
         // Forward to JSP
         req.getRequestDispatcher("/views/civilian/dashboard.jsp").forward(req, resp);

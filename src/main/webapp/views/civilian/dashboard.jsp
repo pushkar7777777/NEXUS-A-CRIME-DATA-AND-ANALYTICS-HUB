@@ -1,6 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%--<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>--%>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +10,7 @@
     <title>Civilian Dashboard - Nexus Hub</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -23,6 +23,7 @@
             --nexus-light: #F0F4F8;     /* Light background */
             --sidebar-hover: #004d7a;
             --sidebar-active: #0055a4;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Enhanced shadow */
         }
 
         /* --- GLOBAL STYLES --- */
@@ -41,21 +42,22 @@
             position: fixed;
             height: 100%;
             overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            box-shadow: 2px 0 15px rgba(0,0,0,0.3); /* Stronger shadow */
             z-index: 1000;
+            transition: all 0.3s; /* Added transition for mobile collapse */
         }
         .sidebar-header {
             padding: 1.5rem;
             text-align: center;
             border-bottom: 2px solid var(--sidebar-hover);
-            font-weight: 800;
+            font-weight: 900; /* Extra bold */
         }
         .sidebar-header h3 i { color: var(--nexus-accent); }
 
         .sidebar-nav .nav-link {
             color: #e0e0e0;
             padding: 1.1rem 1.5rem;
-            font-weight: 500;
+            font-weight: 600; /* Slightly bolder */
             display: flex;
             align-items: center;
             transition: all 0.3s;
@@ -68,10 +70,10 @@
         .sidebar-nav .nav-link.active {
             background-color: var(--sidebar-active);
             color: #ffffff;
-            font-weight: 700;
+            font-weight: 800;
             border-left: 5px solid var(--nexus-accent); /* Accent indicator */
         }
-        .sidebar-nav .nav-link i { margin-right: 10px; font-size: 1.1rem; }
+        .sidebar-nav .nav-link i { margin-right: 12px; font-size: 1.2rem; }
 
         .sidebar-footer {
             position: absolute;
@@ -90,59 +92,65 @@
         }
         .top-navbar {
             background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07); /* Enhanced shadow */
             padding: 0.75rem 2rem;
             position: sticky;
             top: 0;
             z-index: 999;
         }
         .content-area { padding: 2rem; }
-        .welcome-text { color: var(--nexus-dark); font-weight: 600; font-size: 1.1rem; }
-        .main-heading { font-weight: 800; color: var(--nexus-dark); margin-bottom: 2rem; }
+        .welcome-text { color: var(--nexus-dark); font-weight: 700; font-size: 1.2rem; }
+        .main-heading { font-weight: 900; color: var(--nexus-dark); margin-bottom: 2rem; }
 
         /* --- FEATURED BLOCKS --- */
         .welcome-banner {
             background: linear-gradient(90deg, #ffffff, var(--nexus-light));
-            border-radius: 12px;
+            border-radius: 15px; /* Softer corners */
             padding: 2rem;
             margin-bottom: 2rem;
-            border-left: 5px solid var(--nexus-accent);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--nexus-accent); /* Thicker accent bar */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08); /* Enhanced shadow */
         }
         .alert-card {
             background-color: #fce6e6;
-            border: 1px solid #dc3545;
+            border: 2px solid #dc3545; /* Thicker border */
             color: #dc3545;
-            padding: 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.25); /* Enhanced shadow */
+            transition: all 0.3s;
         }
-        .alert-card:hover { background-color: #ffebeb; }
+        .alert-card:hover {
+            background-color: #ffebeb;
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
 
         /* --- STAT CARDS --- */
         .stat-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.07);
+            background-color: #ffffff;
+            border: none;
+            border-radius: 15px; /* Softer corners */
+            box-shadow: var(--card-shadow);
             padding: 1.5rem;
             display: flex;
             align-items: center;
             transition: all 0.3s;
             height: 100%;
         }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
+        .stat-card:hover {
+            transform: translateY(-5px); /* Stronger lift */
+            box-shadow: 0 16px 30px rgba(0,0,0,0.15); /* Stronger shadow */
+        }
 
         .card-icon {
-            width: 60px;
-            height: 60px;
+            width: 65px; /* Larger icon */
+            height: 65px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem; /* Larger icon size */
             margin-right: 1.5rem;
             color: #ffffff;
         }
@@ -151,62 +159,65 @@
         .icon-pending { background-color: #ff9800; }
         .icon-resolved { background-color: #4caf50; }
 
-        .card-info h5 { font-size: 0.9rem; font-weight: 700; color: #888; margin-bottom: 0.25rem; }
-        .stat-number { font-size: 2.2rem; font-weight: 800; color: var(--nexus-dark); }
+        .card-info h5 { font-size: 1rem; font-weight: 700; color: #666; margin-bottom: 0.25rem; }
+        .stat-number { font-size: 2.5rem; font-weight: 900; color: var(--nexus-dark); }
 
         /* --- CHART/ANALYTICS CARD --- */
         .analytics-card {
             background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
             padding: 1.5rem;
             height: 100%;
         }
-        .analytics-card h5 { font-weight: 700; color: var(--nexus-dark); }
+        .analytics-card h5 { font-weight: 800; color: var(--nexus-dark); }
 
 
         /* --- TABLE STYLES --- */
         .main-card {
             background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
             overflow: hidden;
         }
-        .card-header h4 { font-weight: 700; color: var(--nexus-dark); padding: 1rem 1.5rem; margin-bottom: 0; }
+        .card-header h4 { font-weight: 800; color: var(--nexus-dark); padding: 1rem 1.5rem; margin-bottom: 0; }
 
         .table > :not(caption) > * > * { padding: 1rem 1.5rem; }
         .table-light { background-color: var(--nexus-light); }
         .table-light th { color: var(--nexus-dark); font-weight: 700; }
 
-        .badge-status { font-weight: 600; padding: 0.5em 0.8em; min-width: 130px; text-align: center; }
+        .badge-status { font-weight: 700; padding: 0.6em 1em; min-width: 140px; text-align: center; border-radius: 10px; }
 
         /* Custom Button Styling */
         .btn-primary-accent {
             background-color: var(--nexus-accent);
             border-color: var(--nexus-accent);
             color: var(--nexus-dark);
-            font-weight: 700;
+            font-weight: 800;
             transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 163, 255, 0.3);
         }
         .btn-primary-accent:hover {
             background-color: #008be6;
             border-color: #008be6;
             color: #ffffff;
+            box-shadow: 0 6px 12px rgba(0, 163, 255, 0.5);
+            transform: translateY(-2px);
         }
 
-        /* Timeline Modal Styles */
+        /* Timeline Modal Styles (Enhanced visibility) */
         .timeline {
-            border-left: 3px solid #dee2e6;
-            padding-left: 20px;
+            border-left: 4px solid var(--nexus-light); /* Thicker, defined line */
+            padding-left: 30px;
             position: relative;
         }
         .timeline-item {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             position: relative;
         }
         .timeline-icon {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             background-color: var(--nexus-accent);
             color: white;
@@ -214,9 +225,10 @@
             align-items: center;
             justify-content: center;
             position: absolute;
-            left: -35px;
+            left: -42px;
             top: 0;
             z-index: 10;
+            box-shadow: 0 0 0 4px var(--nexus-light); /* Ring effect */
         }
         .timeline-item.resolved .timeline-icon { background-color: #4caf50; }
         .timeline-item.investigation .timeline-icon { background-color: #ff9800; }
@@ -226,15 +238,22 @@
         #map-container {
             height: 350px;
             width: 100%;
-            border-radius: 8px;
-            border: 1px solid #ced4da;
+            border-radius: 12px;
+            border: 2px solid var(--nexus-light); /* Slightly inset border */
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
         }
 
-
+        /* Responsive Sidebar Toggle */
         @media (max-width: 768px) {
-            .sidebar { margin-left: -260px; }
+            .sidebar {
+                margin-left: -260px;
+                box-shadow: none; /* Removed fixed shadow on mobile */
+            }
             .main-content { margin-left: 0; width: 100%; }
-            .sidebar.active { margin-left: 0; }
+            .sidebar.active {
+                margin-left: 0;
+                box-shadow: 4px 0 15px rgba(0,0,0,0.3); /* Shadow only when active */
+            }
         }
     </style>
 </head>
@@ -278,14 +297,14 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="${pageContext.request.contextPath}/civilian/profile">
                 <i class="fas fa-user-circle"></i> Profile Settings
             </a>
         </li>
     </ul>
 
     <div class="sidebar-footer">
-        <a href="../../index.jsp" class="btn btn-outline-light w-100 fw-bold">
+        <a href="/${pageContext.request.contextPath}/index.jsp" class="btn btn-outline-light w-100 fw-bold">
             <i class="fas fa-sign-out-alt me-2"></i> Logout
         </a>
     </div>
@@ -300,7 +319,7 @@
             </button>
 
             <span class="navbar-text welcome-text d-none d-md-block">
-                Welcome, **<%= session.getAttribute("user_name") %>** 👋 !
+                Welcome, <%= session.getAttribute("user_name") %> 👋 !
             </span>
 
             <div class="ms-auto d-flex align-items-center">
@@ -325,7 +344,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="stat-card bg-primary bg-gradient text-white" style="border:none; background: linear-gradient(45deg, #0055a4, #007bff);">
+                <div class="stat-card bg-primary bg-gradient text-white" style="border:none; background: linear-gradient(45deg, var(--sidebar-active), var(--nexus-accent));">
                     <div class="card-icon" style="background: rgba(255,255,255,0.2);"><i class="fas fa-hand-point-right"></i></div>
                     <div class="card-info">
                         <h5 class="text-uppercase text-white">Need to Report?</h5>
@@ -345,7 +364,7 @@
                             <div class="card-icon icon-total"><i class="fas fa-file-alt"></i></div>
                             <div class="card-info">
                                 <h5 class="text-uppercase">Total Filed</h5>
-                                <span class="stat-number">${totalFiled}</span>
+                                <span class="stat-number"><%= session.getAttribute("totalFiled") %></span>
                             </div>
                         </div>
                     </div>
@@ -355,7 +374,7 @@
                             <div class="card-icon icon-pending"><i class="fas fa-hourglass-half"></i></div>
                             <div class="card-info">
                                 <h5 class="text-uppercase">In Progress</h5>
-                                <span class="stat-number">${inProgress}</span>
+                                <span class="stat-number"><%= session.getAttribute("inProgress") %></span>
                             </div>
                         </div>
                     </div>
@@ -365,7 +384,7 @@
                             <div class="card-icon icon-resolved"><i class="fas fa-check-circle"></i></div>
                             <div class="card-info">
                                 <h5 class="text-uppercase">Cases Resolved</h5>
-                                <span class="stat-number">${resolved}</span>
+                                <span class="stat-number"><%= session.getAttribute("resolved") %></span>
                             </div>
                         </div>
                     </div>
@@ -401,67 +420,63 @@
 
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4><i class="fas fa-list-ul me-2"></i> My Complaint History</h4>
-                    <a href="#" class="btn btn-sm btn-outline-secondary">View All</a>
+                    <a href="${pageContext.request.contextPath}/civilian/complaints" class="btn btn-sm btn-outline-secondary">View All</a>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
+
+                    <table class="table table-hover">
+                        <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Complaint ID</th>
                             <th>Type</th>
-                            <th>Date Filed</th>
                             <th>Status</th>
-                            <th>Officer</th>
+                            <th>Assigned To</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
 
                         <tbody>
 
-                        <!-- ======= LOOP THROUGH COMPLAINTS ======= -->
                         <c:forEach var="c" items="${sessionScope.complaints}">
-
                             <tr>
-                                <td><strong>#N-${c.complaintId}</strong></td>
+
+                                <td><strong>${c.complaintId}</strong></td>
 
                                 <td>${c.complaintType}</td>
 
                                 <td>
-                                    <fmt:formatDate value="${c.dateFiled}" pattern="yyyy-MM-dd HH:mm" />
-                                </td>
-
-                                <td>
-                            <span class="badge rounded-pill badge-status
-                                <c:choose>
-                                    <c:when test='${c.currentStatus == "RESOLVED"}'> bg-success </c:when>
-                                    <c:when test='${c.currentStatus == "UNDER_INVESTIGATION"}'> bg-warning text-dark </c:when>
-                                    <c:when test='${c.currentStatus == "UNDER_REVIEW"}'> bg-info text-dark </c:when>
-                                    <c:otherwise> bg-secondary </c:otherwise>
-                                </c:choose>
-                             ">
-                                <c:out value="${c.currentStatus}" />
-                            </span>
+                <span class="badge rounded-pill badge-status
+                    <c:choose>
+                        <c:when test='${c.currentStatus == "RESOLVED"}'> bg-success </c:when>
+                        <c:when test='${c.currentStatus == "UNDER_INVESTIGATION"}'> bg-warning text-dark </c:when>
+                        <c:when test='${c.currentStatus == "UNDER_REVIEW"}'> bg-info text-dark </c:when>
+                        <c:otherwise> bg-secondary </c:otherwise>
+                    </c:choose>
+                ">
+                        ${c.currentStatus}
+                </span>
                                 </td>
 
                                 <td class="text-muted">Not Assigned</td>
 
                                 <td>
-                                    <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal"
+                                    <button class="btn btn-sm btn-outline-primary me-2"
+                                            data-bs-toggle="modal"
                                             data-bs-target="#timelineModal">
                                         <i class="fas fa-sitemap"></i> Timeline
                                     </button>
 
                                     <button class="btn btn-sm btn-outline-info"
-                                            data-bs-toggle="modal" data-bs-target="#followupModal">
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#followupModal">
                                         <i class="fas fa-share-square"></i> Follow-up
                                     </button>
                                 </td>
-                            </tr>
 
+                            </tr>
                         </c:forEach>
 
-                        <!-- EMPTY STATE -->
                         <c:if test="${empty sessionScope.complaints}">
                             <tr>
                                 <td colspan="6" class="text-center text-muted p-4">
@@ -473,6 +488,8 @@
 
                         </tbody>
                     </table>
+
+
                 </div>
             </div>
 
@@ -526,8 +543,7 @@
 
 <div class="modal fade" id="fileComplaintModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-
+        <div class="modal-content border-0 shadow-lg rounded-3">
             <div class="modal-header text-white" style="background: var(--nexus-dark);">
                 <h5 class="modal-title fw-bold">
                     <i class="fas fa-pencil-alt me-2"></i>File a New Complaint
@@ -560,7 +576,6 @@
                 <form action="<%=request.getContextPath()%>/file_complaint" method="post">
 
                     <div class="row g-3">
-
                         <div class="col-md-6">
                             <label class="form-label fw-semibold small">Complaint Type</label>
                             <select name="complaint_type" class="form-select" required>
@@ -637,14 +652,13 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
 
 <div class="modal fade" id="timelineModal" tabindex="-1">
     <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
+        <div class="modal-content border-0 shadow-lg rounded-3">
             <div class="modal-header text-white" style="background: var(--sidebar-active);">
                 <h5 class="modal-title fw-bold"><i class="fas fa-sitemap me-2"></i>Case Timeline: #N-1025</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -657,7 +671,14 @@
                         <p class="small text-muted mb-0">Details and evidence submitted by citizen.</p>
                         <span class="badge bg-light text-secondary small">Oct 30, 2025 | 14:30 HRS</span>
                     </div>
-
+                    <div class="p-4 text-center">
+                        <div id="map-container" style="height: 200px; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #343a40;">
+                                <i class="fas fa-map-marker-alt fs-1 me-2"></i>
+                                Incident Location Map Placeholder
+                            </div>
+                        </div>
+                    </div>
                     <div class="timeline-item investigation">
                         <div class="timeline-icon"><i class="fas fa-share-square"></i></div>
                         <h6 class="fw-bold text-dark">Case Assigned</h6>
@@ -687,7 +708,7 @@
 
 <div class="modal fade" id="followupModal" tabindex="-1">
     <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
+        <div class="modal-content border-0 shadow-lg rounded-3">
             <div class="modal-header text-white" style="background: #198754;">
                 <h5 class="modal-title fw-bold"><i class="fas fa-share-square me-2"></i>Submit Follow-up for #N-1025</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -714,71 +735,31 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_GOES_HERE&callback=initMap">
 </script>
 
 <script>
-    function initMap() {
-        const initialLocation = { lat: 18.5204, lng: 73.8567 };
-
-        const map = new google.maps.Map(document.getElementById("map-container"), {
-            zoom: 12,
-            center: initialLocation,
-            mapId: 'DEMO_MAP_ID'
-        });
-
-        const crimeLocation = { lat: 18.5500, lng: 73.8400 };
-        new google.maps.Marker({
-            position: crimeLocation,
-            map,
-            title: "Theft Incident - 1.5km Away",
-            icon: {
-                url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-            }
-        });
-
-        new google.maps.Circle({
-            strokeColor: "#FF0000",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.15,
-            map,
-            center: initialLocation,
-            radius: 5000
-        });
-
-        document.getElementById("map-container").innerHTML = '';
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById('map-controls'));
-    }
-
-    document.getElementById('sidebar-toggle').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('active');
-    });
-
+    // --- CHART.JS SETUP ---
+    // Fetching backend values from session
+    const totalFiled = ${sessionScope.totalFiled};
+    const inProgress = ${sessionScope.inProgress};
+    const resolved = ${sessionScope.resolved};
 
     const ctx = document.getElementById('caseStatusChart').getContext('2d');
 
-    const totalFiled = parseInt("${totalFiled}" || 5);
-    const inProgress = parseInt("${inProgress}" || 2);
-    const resolved = parseInt("${resolved}" || 3);
-    const pendingReview = totalFiled - inProgress - resolved;
-
-    const chart = new Chart(ctx, {
-        type: 'doughnut',
+    new Chart(ctx, {
+        type: 'doughnut', // or 'pie'
         data: {
-            labels: ['Resolved', 'In Progress', 'Pending Review', 'Filed/New'],
+            labels: ['Total Filed', 'In Progress', 'Resolved'],
             datasets: [{
-                data: [resolved, inProgress, pendingReview > 0 ? pendingReview : 1, totalFiled - resolved - inProgress - pendingReview],
-                backgroundColor: [
-                    '#4caf50',     // Green (Resolved)
-                    '#ff9800',     // Orange (In Progress)
-                    '#007bff',     // Blue (Pending Review - Fallback)
-                    '#6c757d'      // Gray (New/Filed - Fallback)
-                ],
-                hoverOffset: 4
+                data: [totalFiled, inProgress, resolved],
+                backgroundColor: ['#007bff', '#ffc107', '#28a745'], // blue, yellow, green
+                borderColor: '#fff',
+                borderWidth: 2,
+                hoverOffset: 8
             }]
         },
         options: {
@@ -790,15 +771,69 @@
                     labels: {
                         font: { family: 'Inter' }
                     }
-                },
-                title: {
-                    display: true,
-                    text: 'Your Case Distribution',
-                    font: { size: 16, weight: 'bold', family: 'Inter' }
                 }
             }
         }
     });
+
+    // --- SIDEBAR TOGGLE ---
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('active');
+    });
+
+    // --- GOOGLE MAPS INITIALIZATION FUNCTION (Global Scope) ---
+    function initMap() {
+        const initialLocation = { lat: 18.5204, lng: 73.8567 };
+
+        // Get the map container elements (Dashboard map and Timeline map)
+        const dashboardMapContainer = document.querySelector("#nearby-crimes #map-container");
+        const timelineMapContainer = document.querySelector("#timelineModal #map-container");
+
+
+        // 1. Initialize Dashboard Map
+        if (dashboardMapContainer) {
+            dashboardMapContainer.innerHTML = '';
+
+            const map = new google.maps.Map(dashboardMapContainer, {
+                zoom: 12,
+                center: initialLocation,
+                mapId: 'DEMO_MAP_ID'
+            });
+
+            // Example Crime Location
+            const crimeLocation = { lat: 18.5500, lng: 73.8400 };
+
+            new google.maps.Marker({
+                position: crimeLocation,
+                map: map,
+                title: "Theft Incident - 1.5km Away",
+                icon: {
+                    url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                }
+            });
+
+            new google.maps.Circle({
+                strokeColor: "#00A3FF",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#00A3FF",
+                fillOpacity: 0.15,
+                map: map,
+                center: initialLocation,
+                radius: 5000
+            });
+        }
+
+        // 2. Clear Placeholder for Timeline Map (optional, as it's a modal)
+        // Note: Full map initialization inside a Bootstrap modal requires an event listener
+        // (like 'shown.bs.modal') to ensure the map div is visible, but we'll leave
+        // the map object creation logic simple for this single file.
+        if(timelineMapContainer) {
+            timelineMapContainer.innerHTML = 'Incident Location Map Placeholder';
+            // To properly render map in modal, you'd add:
+            // $('#timelineModal').on('shown.bs.modal', function () { /* map initialization here */ });
+        }
+    }
 </script>
 </body>
 </html>

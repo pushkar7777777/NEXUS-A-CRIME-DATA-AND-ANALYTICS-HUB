@@ -8,25 +8,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Nexus Hub</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         /* --- BRAND COLORS --- */
+        /* ... (Root variables remain the same) ... */
         :root {
-            --nexus-dark: #1C3144;      /* Primary Dark Blue/Teal (Sidebar/Headings) */
-            --nexus-accent: #00A3FF;    /* Bright Blue/Cyan Accent (Links/Primary Action) */
-            --nexus-light: #F0F4F8;     /* Light background */
+            --nexus-dark: #1C3144;
+            --nexus-accent: #00A3FF;
+            --nexus-light: #F0F4F8;
             --sidebar-hover: #004d7a;
             --sidebar-active: #0055a4;
         }
@@ -41,9 +29,9 @@
         }
 
         /* --- SIDEBAR --- */
+        /* NOTE: Sidebar CSS must remain here since this page defines the layout */
         .sidebar {
             width: 280px;
-            /* Using a darker gradient based on the new dark color */
             background: linear-gradient(180deg, var(--nexus-dark), #203a43, #2c5364);
             color: #ffffff;
             position: fixed;
@@ -53,14 +41,13 @@
             z-index: 1000;
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
-
+        /* ... (Remaining sidebar styles like .sidebar-header, .sidebar-nav, etc., must be here) ... */
         .sidebar-header {
             padding: 2rem 1.5rem;
             text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             background: rgba(0,0,0,0.1);
         }
-
         .nexus-brand {
             font-weight: 800;
             font-size: 1.5rem;
@@ -71,17 +58,16 @@
             gap: 10px;
         }
         .nexus-brand svg path, .nexus-brand svg circle {
-            stroke: var(--nexus-accent); /* Accent color for the icon */
+            stroke: var(--nexus-accent);
             fill: var(--nexus-accent);
         }
-        .nexus-brand svg path[d*="8l-3 5"] { /* Connections */
+        .nexus-brand svg path[d*="8l-3 5"] {
             stroke: #fff;
         }
 
         .sidebar-nav {
             padding-top: 1rem;
         }
-
         .sidebar-nav .nav-link {
             color: rgba(255,255,255,0.8);
             padding: 1rem 2rem;
@@ -91,31 +77,26 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-left: 4px solid transparent;
         }
-
         .sidebar-nav .nav-link i {
             margin-right: 1rem;
             width: 25px;
             text-align: center;
             transition: transform 0.3s;
         }
-
         .sidebar-nav .nav-link:hover {
             background-color: rgba(255,255,255,0.05);
             color: #ffffff;
             padding-left: 2.5rem;
         }
-
         .sidebar-nav .nav-link:hover i {
             transform: scale(1.1);
-            color: var(--nexus-accent); /* Use Accent color on hover */
+            color: var(--nexus-accent);
         }
-
         .sidebar-nav .nav-link.active {
             background: var(--sidebar-active);
             color: #ffffff;
             font-weight: 600;
             border-left: 4px solid var(--nexus-accent);
-            /* Soft shadow using the accent color */
             box-shadow: inset 5px 0 10px -5px rgba(0, 163, 255, 0.4);
         }
 
@@ -131,6 +112,7 @@
             font-weight: 600;
         }
 
+
         /* --- MAIN CONTENT --- */
         .main-content {
             margin-left: 280px;
@@ -139,6 +121,7 @@
         }
 
         /* --- TOP NAVBAR --- */
+        /* ... (Remaining layout styles) ... */
         .top-navbar {
             background-color: #ffffff;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
@@ -181,7 +164,7 @@
         }
 
         .stat-card:hover {
-            transform: translateY(-5px); /* Less dramatic lift */
+            transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         }
 
@@ -197,12 +180,10 @@
             flex-shrink: 0;
             opacity: 0.9;
         }
-
-        /* New Color Mapping for Consistency */
-        .icon-users { background-color: #e0f7fa; color: #00bcd4; } /* Cyan */
-        .icon-police { background-color: #f3e5f5; color: #9c27b0; } /* Purple */
-        .icon-complaints { background-color: #ffebee; color: #d32f2f; } /* Red */
-        .icon-dept { background-color: #e8f5e9; color: #4caf50; } /* Green */
+        .icon-users { background-color: #e0f7fa; color: #00bcd4; }
+        .icon-police { background-color: #f3e5f5; color: #9c27b0; }
+        .icon-complaints { background-color: #ffebee; color: #d32f2f; }
+        .icon-dept { background-color: #e8f5e9; color: #4caf50; }
 
         .stat-card h6 {
             font-size: 0.75rem;
@@ -244,7 +225,7 @@
 
         .table-hover tbody tr:hover {
             background-color: var(--nexus-light);
-            transform: none; /* Keep table rows steady */
+            transform: none;
             box-shadow: none;
         }
 
@@ -262,66 +243,8 @@
 </head>
 <body>
 
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="nexus-brand animate__animated animate__fadeIn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--nexus-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <circle cx="12" cy="8" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
-                <circle cx="9" cy="13" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
-                <circle cx="15" cy="13" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
-                <path d="M12 8l-3 5" stroke="#fff"/>
-                <path d="M12 8l3 5" stroke="#fff"/>
-                <path d="M9 13h6" stroke="#fff"/>
-            </svg>
-            NEXUS
-        </div>
-    </div>
-
-    <ul class="nav flex-column sidebar-nav">
-        <li class="nav-item">
-            <a class="nav-link active" href="#">
-                <i class="fas fa-tachometer-alt"></i> Dashboard
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/userManagement.jsp">
-                <i class="fas fa-users-cog"></i> User Management
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/complaintMonitor.jsp">
-                <i class="fas fa-tasks"></i> Complaint Monitor
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/advanceAnalytics.jsp">
-                <i class="fas fa-chart-line"></i> Advanced Analytics
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">
-                <i class="fas fa-building"></i> Station/Dept.
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">
-                <i class="fas fa-clipboard-list"></i> System Logs
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#alertModal">
-                <i class="fas fa-bullhorn"></i> Broadcast Alert
-            </a>
-        </li>
-    </ul>
-
-    <div class="sidebar-footer">
-        <a href="../../index.jsp" class="btn btn-outline-light w-100 btn-sm fw-bold">
-            <i class="fas fa-sign-out-alt me-2"></i> Logout
-        </a>
-    </div>
-</div>
+<%-- 🎯 FIX: Replace the hardcoded sidebar HTML with the include 🎯 --%>
+<jsp:include page="admin_sidebar.jsp" flush="true"/>
 
 <div class="main-content" id="main-content">
 
@@ -355,7 +278,6 @@
     </nav>
 
     <div class="container-fluid p-4">
-
         <div class="d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeInDown">
             <h3 class="fw-bold text-dark m-0"><i class="fas fa-chart-area me-2 text-secondary"></i> System Overview</h3>
             <div class="text-muted small">Last updated: <span id="liveClock">--:--</span></div>
@@ -529,9 +451,71 @@
 <script>
     AOS.init({ duration: 800, once: true });
 
-    // ... your other JS ...
+    // Sidebar Toggle Logic (needed for the button in the main page)
+    document.getElementById('sidebar-toggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('active');
+        const mainContent = document.querySelector('.main-content');
+        mainContent.style.marginLeft =
+            mainContent.style.marginLeft === '0px' ? '280px' : '0px';
+    });
 
-    // SAFE SUMMARY VALUES
+    // Clock
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('liveClock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }, 1000);
+
+    // Counter Animation
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const increment = target / 50;
+        const updateCounter = () => {
+            const c = +counter.innerText;
+            if(c < target) {
+                counter.innerText = Math.ceil(c + increment);
+                setTimeout(updateCounter, 20);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCounter();
+    });
+
+    // --- CHARTS ---
+
+    // 1. Crime Trend Chart (Line)
+    const ctxTrend = document.getElementById('crimeTrendChart').getContext('2d');
+    new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+            labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+            datasets: [{
+                label: 'Theft',
+                data: [120, 150, 140, 160, 180, 170],
+                borderColor: '#0d47a1',
+                backgroundColor: 'rgba(13, 71, 161, 0.1)',
+                fill: true,
+                tension: 0.4
+            }, {
+                label: 'Cybercrime',
+                data: [80, 90, 110, 100, 130, 140],
+                borderColor: '#ff6f00',
+                backgroundColor: 'rgba(255, 111, 0, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 2000, easing: 'easeOutQuart' },
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true, grid: { borderDash: [5, 5] } } }
+        }
+    });
+
+    // SAFE SUMMARY VALUES (Updated for completeness)
     const statusData = [
         ${summary.filed != null ? summary.filed : 0},
         ${summary.underReview != null ? summary.underReview : 0},
@@ -540,7 +524,7 @@
         ${summary.closed != null ? summary.closed : 0}
     ];
 
-    // Complaint Status Chart (Dynamic)
+    // 2. Complaint Status Chart (Doughnut)
     const ctxStatus = document.getElementById('complaintStatusChart').getContext('2d');
     new Chart(ctxStatus, {
         type: 'doughnut',
@@ -556,12 +540,13 @@
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: { animateScale: true, animateRotate: true },
             plugins: { legend: { position: 'bottom' } },
             cutout: '70%'
         }
     });
-</script>
 
+</script>
 
 </body>
 </html>

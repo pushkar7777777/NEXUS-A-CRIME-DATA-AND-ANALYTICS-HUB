@@ -22,41 +22,43 @@ public class LoginServlet extends HttpServlet {
 
         String ctx = req.getContextPath();
 
+        // Basic validation
         if (role == null || role.isBlank()) {
-            resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Please+select+role");
+            resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Please+select+a+role");
             return;
         }
 
-        // Hash password
-        String hashed = PasswordUtil.hashPassword(password);
+        if (email == null || password == null || email.isBlank() || password.isBlank()) {
+            resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Email+and+Password+Required");
+            return;
+        }
 
+        String hashed = PasswordUtil.hashPassword(password);
         HttpSession session = req.getSession();
 
         try {
             switch (role.toUpperCase()) {
 
-                /* ================= CIVILIAN LOGIN ================= */
+                /* -------------------- CIVILIAN LOGIN -------------------- */
                 case "CIVILIAN": {
                     CivilianRegistrationDAO cdao = new CivilianRegistrationDAO();
                     CivilianRegistration civilian = cdao.checkLogin(email, hashed);
 
                     if (civilian != null) {
 
-                        // store minimal session data
-                        session.setAttribute("user", civilian); // full object
-                        session.setAttribute("user_id", civilian.getRegId());
+                        session.setAttribute("civilian_reg_id", civilian.getRegId());
                         session.setAttribute("user_name", civilian.getFullName());
                         session.setAttribute("role", "CIVILIAN");
+                        session.setAttribute("user", civilian); // whole object
 
                         resp.sendRedirect(ctx + "/civilian/dashboard");
-
                     } else {
                         resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Invalid+Civilian+Credentials");
                     }
                     break;
                 }
 
-                /* ================= POLICE LOGIN ================= */
+                /* -------------------- POLICE LOGIN -------------------- */
                 case "POLICE": {
                     PoliceRegistrationDAO pdao = new PoliceRegistrationDAO();
                     PoliceRegistration police = pdao.checkLogin(email, hashed);
@@ -68,20 +70,19 @@ public class LoginServlet extends HttpServlet {
                             return;
                         }
 
-                        // store minimal session data
-                        session.setAttribute("user", police);
-                        session.setAttribute("user_id", police.getRegId());
+                        session.setAttribute("police_reg_id", police.getRegId());
                         session.setAttribute("user_name", police.getFullName());
                         session.setAttribute("role", "POLICE");
+                        session.setAttribute("user", police);
 
-                        resp.sendRedirect(ctx + "/views/police/dashboard.jsp");
+                        resp.sendRedirect(ctx + "/police/dashboard");
                     } else {
                         resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Invalid+Police+Credentials");
                     }
                     break;
                 }
 
-                /* ================= ADMIN LOGIN ================= */
+                /* -------------------- ADMIN LOGIN -------------------- */
                 case "ADMIN": {
                     AdminRegistrationDAO adao = new AdminRegistrationDAO();
                     AdminRegistration admin = adao.checkLogin(email, hashed);
@@ -93,26 +94,30 @@ public class LoginServlet extends HttpServlet {
                             return;
                         }
 
-                        // store minimal session data
-                        session.setAttribute("user", admin);
-                        session.setAttribute("user_id", admin.getRegId());
+                        session.setAttribute("admin_reg_id", admin.getRegId());
                         session.setAttribute("user_name", admin.getFullName());
                         session.setAttribute("role", "ADMIN");
+                        session.setAttribute("user", admin);
 
-                        resp.sendRedirect(ctx + "/views/admin/dashboard.jsp");
+                        /** IMPORTANT FIX:
+                         * Redirect to servlet → not direct JSP
+                         */
+                        resp.sendRedirect(ctx + "/admin/dashboard");
                     } else {
                         resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Invalid+Admin+Credentials");
                     }
                     break;
                 }
 
+                /* -------------------- INVALID ROLE -------------------- */
                 default:
-                    resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Invalid+Role");
+                    resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Invalid+Role+Selected");
+                    break;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Exception+Occurred");
+            resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Unexpected+Error+Occurred");
         }
     }
 }

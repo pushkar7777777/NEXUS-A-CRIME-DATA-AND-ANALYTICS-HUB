@@ -45,7 +45,6 @@ public class ComplaintRegistrationDAO extends DBConnection {
     public List<Complaint> getByUserId(int regId) {
         List<Complaint> list = new ArrayList<>();
 
-        // Order by date filed descending so the newest are at the top
         String sql = "SELECT * FROM Complaints WHERE reg_id = ? ORDER BY date_filed DESC";
 
         try (Connection conn = getConnection();
@@ -54,12 +53,32 @@ public class ComplaintRegistrationDAO extends DBConnection {
             ps.setInt(1, regId);
 
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) list.add(map(rs));
 
-        } catch (Exception e) { e.printStackTrace(); }
+            System.out.println("=== Complaint Records ===");
+
+            while (rs.next()) {
+                Complaint c = map(rs);
+                list.add(c);
+
+                // PRINT EACH FIELD HERE
+                System.out.println(
+                        "ID: " + c.getComplaintId() +
+                                ", User: " + c.getRegId() +
+                                ", ComplaintType: " + c.getComplaintType() +
+                                ", Status: " + c.getCurrentStatus() +
+                                ", Date: " + c.getDateFiled()
+                );
+            }
+
+            System.out.println("Total Complaints Fetched = " + list.size());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return list;
     }
+
 
     /* ---------------- COUNT COMPLAINTS OF A USER BY SINGLE STATUS ---------------- */
     public int getCount(int regId, String status) {
@@ -139,17 +158,13 @@ public class ComplaintRegistrationDAO extends DBConnection {
     }
 
     /* ---------------- MAP RESULTSET → MODEL ---------------- */
-    private Complaint map(ResultSet rs) throws Exception {
-
+    public Complaint map(ResultSet rs) throws Exception {
         Complaint c = new Complaint();
 
         c.setComplaintId(rs.getInt("complaint_id"));
         c.setRegId(rs.getInt("reg_id"));
         c.setComplaintType(rs.getString("complaint_type"));
-
-        Date doi = rs.getDate("date_of_incident");
-        if (doi != null) c.setDateOfIncident(doi.toLocalDate());
-
+        c.setDateOfIncident(rs.getDate("date_of_incident").toLocalDate());
         c.setLocationOfIncident(rs.getString("location_of_incident"));
         c.setLatitude(rs.getDouble("latitude"));
         c.setLongitude(rs.getDouble("longitude"));
@@ -158,6 +173,7 @@ public class ComplaintRegistrationDAO extends DBConnection {
         c.setVictimDetails(rs.getString("victim_details"));
         c.setUrgencyLevel(rs.getString("urgency_level"));
 
+        // LocalDateTime mapping
         Timestamp ts = rs.getTimestamp("date_filed");
         if (ts != null) c.setDateFiled(ts.toLocalDateTime());
 
