@@ -300,17 +300,17 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/station_dept.jsp">
                 <i class="fas fa-building"></i> Station/Dept.
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/system_logs.jsp">
                 <i class="fas fa-clipboard-list"></i> System Logs
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#alertModal">
+            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/broadcast_aleart.jsp" data-bs-toggle="modal" data-bs-target="#alertModal">
                 <i class="fas fa-bullhorn"></i> Broadcast Alert
             </a>
         </li>

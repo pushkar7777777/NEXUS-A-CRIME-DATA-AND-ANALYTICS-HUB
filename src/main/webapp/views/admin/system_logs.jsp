@@ -3,18 +3,20 @@
 <%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 
+<%-- Mock data structure for demonstration --%>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Analytics - Nexus Hub</title>
+    <title>System Logs - Nexus Hub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         /* --- BRAND COLORS --- */
@@ -123,11 +125,12 @@
         .main-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
         .card-header-custom { border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;}
         .card-header-custom h5 { color: var(--nexus-dark); font-weight: 700; }
-        .kpi-stat-number { font-size: 2.5rem; font-weight: 900; color: var(--nexus-dark); }
-        .kpi-stat-label { font-size: 0.9rem; font-weight: 600; color: #666; }
-        .kpi-card { border-left: 5px solid var(--nexus-accent); border-radius: 10px; padding: 1rem; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.3s; }
-        .kpi-card:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
 
+        /* Log Status Badges */
+        .badge-status-SUCCESS { background-color: #28a745; color: #fff; }
+        .badge-status-INFO { background-color: #17a2b8; color: #fff; }
+        .badge-status-WARNING { background-color: #ffc107; color: var(--nexus-dark); }
+        .badge-status-FAILURE { background-color: #dc3545; color: #fff; }
 
         /* Responsive collapse logic */
         @media (max-width: 991.98px) { .sidebar { margin-left: -280px; } .main-content { margin-left: 0; width: 100%; } .sidebar.active { margin-left: 0; } }
@@ -164,18 +167,18 @@
             </a>
         </li>
         <li class="nav-item">
-            <%-- Set 'active' class for the current page: Advanced Analytics --%>
-            <a class="nav-link active" href="${pageContext.request.contextPath}/views/admin/advanceAnalytics.jsp">
+            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/advanceAnalytics.jsp">
                 <i class="fas fa-chart-line"></i> Advanced Analytics
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/station_department.jsp">
                 <i class="fas fa-building"></i> Station/Dept.
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <%-- Set 'active' class for the current page: System Logs --%>
+            <a class="nav-link active" href="${pageContext.request.contextPath}/views/admin/system_logs.jsp">
                 <i class="fas fa-clipboard-list"></i> System Logs
             </a>
         </li>
@@ -201,143 +204,106 @@
                 <i class="fas fa-bars fs-4 text-secondary"></i>
             </button>
             <div class="ms-auto d-flex align-items-center gap-3">
-                <span class="fw-bold text-uppercase text-secondary me-3">Advanced Analytics</span>
+                <span class="fw-bold text-uppercase text-secondary me-3">System Logs</span>
                 <img src="https://ui-avatars.com/api/?name=Admin+User&background=1C3144&color=fff" class="rounded-circle shadow-sm" width="35" height="35" alt="Admin">
             </div>
         </div>
     </nav>
     <div class="container-fluid p-4">
-        <h3 class="fw-bold text-dark mb-4"><i class="fas fa-chart-line me-2 text-secondary"></i> Advanced System Analytics</h3>
-
-        <!-- KPI STATS -->
-        <div class="row g-4 mb-5">
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="kpi-card" style="border-left-color: #4caf50;">
-                    <div class="kpi-stat-number">18.5 hrs</div>
-                    <div class="kpi-stat-label">Avg. Resolution Time</div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="kpi-card" style="border-left-color: #ff9800;">
-                    <div class="kpi-stat-number">92%</div>
-                    <div class="kpi-stat-label">Success Rate (Solved)</div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="kpi-card" style="border-left-color: #007bff;">
-                    <div class="kpi-stat-number">2500+</div>
-                    <div class="kpi-stat-label">Verified Civilians</div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="kpi-card" style="border-left-color: #f44336;">
-                    <div class="kpi-stat-number">12:1</div>
-                    <div class="kpi-stat-label">Civilian/Officer Ratio</div>
-                </div>
-            </div>
-        </div>
-        <!-- END KPI STATS -->
+        <h3 class="fw-bold text-dark mb-4"><i class="fas fa-clipboard-list me-2 text-secondary"></i> Application Activity Logs</h3>
 
         <div class="row g-4 mb-4">
-            <div class="col-lg-6" data-aos="fade-right">
+            <div class="col-lg-12">
                 <div class="main-card">
                     <div class="card-header-custom">
-                        <h5 class="fw-bold mb-0"><i class="fas fa-chart-bar me-2"></i> Monthly Complaint Volume</h5>
+                        <h5 class="fw-bold mb-0"><i class="fas fa-history me-2"></i> Recent System Activity</h5>
+                        <div class="d-flex gap-3">
+                            <button class="btn btn-sm btn-outline-danger">Clear Logs</button>
+                            <button class="btn btn-sm btn-outline-secondary">Download CSV</button>
+                        </div>
                     </div>
-                    <canvas id="volumeChart" style="max-height: 350px;"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-6" data-aos="fade-left">
-                <div class="main-card">
-                    <div class="card-header-custom">
-                        <h5 class="fw-bold mb-0"><i class="fas fa-map-marker-alt me-2"></i> Top 5 Incident Types</h5>
+
+                    <div class="d-flex justify-content-between mb-4 mt-3">
+                        <div class="input-group w-50">
+                            <input type="text" class="form-control" placeholder="Search by User, Module, or Action">
+                            <button class="btn btn-outline-secondary"><i class="fas fa-search"></i></button>
+                        </div>
+                        <select class="form-select w-auto">
+                            <option>All Modules</option>
+                            <option>Auth</option>
+                            <option>User Management</option>
+                            <option>Complaint Monitor</option>
+                            <option>System</option>
+                        </select>
                     </div>
-                    <canvas id="typeChart" style="max-height: 350px;"></canvas>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Log ID</th>
+                                <th>Timestamp</th>
+                                <th>User ID</th>
+                                <th>Module</th>
+                                <th>Action/Description</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach var="log" items="${logList}">
+                                <tr>
+                                    <td class="ps-4 fw-bold text-primary">#${log.logId}</td>
+                                    <td class="small text-muted">${log.timestamp}</td>
+                                    <td>${log.userId}</td>
+                                    <td><span class="badge bg-secondary">${log.module}</span></td>
+                                    <td class="text-wrap">${log.description}</td>
+                                    <td>
+                                            <span class="badge rounded-pill badge-status-${log.status} fw-semibold">
+                                                    ${log.status}
+                                            </span>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            <c:if test="${empty logList}">
+                                <tr><td colspan="6" class="text-center text-muted p-4">No system activity logs found.</td></tr>
+                            </c:if>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <%-- 3. JAVASCRIPT --%>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 800, once: true });
 
-    // Sidebar Toggle Logic (essential for responsiveness)
+    // Sidebar Toggle Logic
     document.getElementById('sidebar-toggle').addEventListener('click', function() {
         const sidebar = document.querySelector('.sidebar');
         const mainContent = document.querySelector('.main-content');
-
-        // Toggle the 'active' class for mobile responsiveness
         sidebar.classList.toggle('active');
 
-        // Toggle the margin-left for desktop
         if (window.innerWidth >= 992) {
-            if (mainContent.style.marginLeft === '0px' || mainContent.style.marginLeft === '') {
-                mainContent.style.marginLeft = '280px';
-            } else {
-                mainContent.style.marginLeft = '0px';
-            }
+            mainContent.style.marginLeft = sidebar.classList.contains('active') ? '0px' : '280px';
         }
     });
 
-    // --- Chart JS Logic for Advanced Analytics ---
-
-    // 1. Monthly Complaint Volume (Bar Chart)
-    const ctxVolume = document.getElementById('volumeChart').getContext('2d');
-    new Chart(ctxVolume, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Total Complaints',
-                data: [450, 480, 520, 500, 550, 610],
-                backgroundColor: 'var(--nexus-accent)',
-                borderColor: 'var(--nexus-accent)',
-                borderWidth: 1,
-                borderRadius: 5
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: { y: { beginAtZero: true } }
+    // Mock Class for compilation (replace with actual Java class definition)
+    class LogEntry {
+        constructor(logId, timestamp, userId, description, status, module) {
+            this.logId = logId;
+            this.timestamp = timestamp;
+            this.userId = userId;
+            this.description = description;
+            this.status = status;
+            this.module = module;
         }
-    });
-
-    // 2. Top 5 Incident Types (Radar Chart)
-    const ctxType = document.getElementById('typeChart').getContext('2d');
-    new Chart(ctxType, {
-        type: 'radar',
-        data: {
-            labels: ['Theft', 'Assault', 'Cybercrime', 'Domestic', 'Accident'],
-            datasets: [{
-                label: 'Volume Share (%)',
-                data: [30, 20, 15, 12, 8],
-                backgroundColor: 'rgba(28, 49, 68, 0.4)',
-                borderColor: 'var(--nexus-dark)',
-                borderWidth: 2,
-                pointBackgroundColor: 'var(--nexus-accent)'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom' }
-            },
-            elements: { line: { tension: 0.1 } },
-            scales: { r: {
-                    ticks: { display: false },
-                    pointLabels: { font: { size: 12, weight: 'bold' } },
-                    grid: { color: 'rgba(0,0,0,0.1)' }
-                }}
-        }
-    });
+    }
 </script>
 </body>
 </html>

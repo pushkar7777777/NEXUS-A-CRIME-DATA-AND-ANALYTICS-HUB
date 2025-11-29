@@ -1,5 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
+
 <%-- This JSP assumes a list of 'complaints' is passed from the controller --%>
 <c:set var="complaints" value="${sessionScope.allComplaints}"/>
 
@@ -14,13 +17,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
         /* --- BRAND COLORS --- */
         :root {
             --nexus-dark: #1C3144;      /* Primary Dark Blue/Teal (Sidebar/Headings) */
-            --nexus-accent: #00A3FF;    /* Bright Blue/Cyan Accent (Links/Primary Action) */
+            --nexus-accent: #008be6;    /* Bright Blue/Cyan Accent (Links/Primary Action) */
             --nexus-light: #F0F4F8;     /* Light background */
             --sidebar-hover: #004d7a;
             --sidebar-active: #0055a4;
@@ -35,7 +37,7 @@
             overflow-x: hidden;
         }
 
-        /* --- SIDEBAR (Copied from User Management) --- */
+        /* --- SIDEBAR --- */
         .sidebar {
             width: 280px;
             background: linear-gradient(180deg, var(--nexus-dark), #203a43, #2c5364);
@@ -61,13 +63,12 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            color: #ffffff;
         }
-        .nexus-brand svg path, .nexus-brand svg circle {
-            stroke: var(--nexus-accent);
+        .nexus-brand svg { /* Custom SVG Shield with checkmark */
+            width: 28px;
+            height: 28px;
             fill: var(--nexus-accent);
-        }
-        .nexus-brand svg path[d*="8l-3 5"] {
-            stroke: #fff;
         }
         .sidebar-nav {
             padding-top: 1rem;
@@ -118,16 +119,17 @@
         /* --- MAIN CONTENT / TOP NAVBAR / CARD STYLES --- */
         .main-content { margin-left: 280px; width: calc(100% - 280px); transition: all 0.3s; }
         .top-navbar { background-color: #ffffff; box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05); padding: 1rem 2rem; position: sticky; top: 0; z-index: 999; }
-        .top-navbar .btn-nexus { background: var(--nexus-accent); border: 1px solid var(--nexus-accent); color: var(--nexus-dark); font-weight: 600; transition: all 0.3s; }
-        .top-navbar .btn-nexus:hover { background: #008be6; border-color: #008be6; color: #fff; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0, 163, 255, 0.3); }
+        .btn-nexus { background: var(--nexus-accent) !important; border: 1px solid var(--nexus-accent) !important; color: white !important; font-weight: 600; transition: all 0.3s; }
+        .btn-nexus:hover { background: #007bbd !important; border-color: #007bbd !important; color: white !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0, 163, 255, 0.3); }
         .main-card { border: 1px solid #e0e0e0; border-radius: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); background: white; padding: 1.5rem; }
         .card-header-custom { border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;}
         .card-header-custom h5 { color: var(--nexus-dark); font-weight: 700; }
 
-        /* Urgency Badges (Updated to match existing color scheme) */
-        .badge-urgency-HIGH { background-color: #fcebeb; color: #dc3545; border: 1px solid #f8d7da; } /* Light Red */
-        .badge-urgency-MEDIUM { background-color: #fff8e1; color: #ffc107; border: 1px solid #ffeeba; } /* Light Yellow */
-        .badge-urgency-LOW { background-color: #e6f7ff; color: #007bff; border: 1px solid #cce6ff; } /* Light Blue */
+        /* --- DYNAMIC BADGES (Complaint Monitor Specific) --- */
+        /* Urgency Badges */
+        .badge-urgency-HIGH { background-color: #dc3545; color: #fff; } /* Red */
+        .badge-urgency-MEDIUM { background-color: #ffc107; color: var(--nexus-dark); } /* Yellow */
+        .badge-urgency-LOW { background-color: #17a2b8; color: #fff; } /* Cyan */
 
         /* Responsive collapse logic */
         @media (max-width: 991.98px) { .sidebar { margin-left: -280px; } .main-content { margin-left: 0; width: 100%; } .sidebar.active { margin-left: 0; } }
@@ -139,16 +141,11 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="nexus-brand animate__animated animate__fadeIn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--nexus-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <circle cx="12" cy="8" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
-                <circle cx="9" cy="13" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
-                <circle cx="15" cy="13" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
-                <path d="M12 8l-3 5" stroke="#fff"/>
-                <path d="M12 8l3 5" stroke="#fff"/>
-                <path d="M9 13h6" stroke="#fff"/>
+            <!-- SVG Shield Icon with checkmark -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.88 12.82l-2.58-2.58L6.47 12l2.05 2.05 4.49-4.49 1.06 1.06-5.55 5.55z"/>
             </svg>
-            NEXUS
+            NEXUS HUB
         </div>
     </div>
 
@@ -255,14 +252,20 @@
                                     <td class="ps-4 fw-bold text-primary">#N-${comp.complaintId}</td>
                                     <td>${comp.complaintType}</td>
                                     <td>
-                                            <span class="badge badge-urgency-${comp.urgencyLevel} fw-bold">
+                                            <span class="badge rounded-pill badge-urgency-
+                                            <c:choose>
+                                                <c:when test='${comp.urgencyLevel == "HIGH"}'>HIGH</c:when>
+                                                <c:when test='${comp.urgencyLevel == "MEDIUM"}'>MEDIUM</c:when>
+                                                <c:otherwise>LOW</c:otherwise>
+                                            </c:choose>
+                                            fw-semibold">
                                                     ${comp.urgencyLevel}
                                             </span>
                                     </td>
                                     <td>
                                             <span class="badge rounded-pill
                                                 <c:choose>
-                                                    <c:when test='${comp.currentStatus == "RESOLVED"}'>bg-success</c:when>
+                                                    <c:when test='${comp.currentStatus == "RESOLVED" || comp.currentStatus == "CLOSED"}'>bg-success</c:when>
                                                     <c:when test='${comp.currentStatus == "UNDER_INVESTIGATION"}'>bg-warning text-dark</c:when>
                                                     <c:when test='${comp.currentStatus == "UNDER_REVIEW"}'>bg-info text-dark</c:when>
                                                     <c:when test='${comp.currentStatus == "FILED"}'>bg-primary</c:when>
@@ -273,7 +276,7 @@
                                     </td>
                                     <td>${comp.locationOfIncident}</td>
                                     <td class="small text-muted">${comp.filedBy}</td>
-                                    <td class="small">${comp.dateFiled}</td>
+                                    <td class="small"><fmt:formatDate value="${comp.dateFiled}" pattern="MMM dd, yyyy HH:mm"/></td>
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-secondary border" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
@@ -299,6 +302,7 @@
     </div>
 </div>
 <%-- 3. JAVASCRIPT --%>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 800, once: true });
@@ -312,10 +316,12 @@
         sidebar.classList.toggle('active');
 
         // Toggle the margin-left for desktop
-        if (mainContent.style.marginLeft === '0px' || mainContent.style.marginLeft === '') {
-            mainContent.style.marginLeft = '280px';
-        } else {
-            mainContent.style.marginLeft = '0px';
+        if (window.innerWidth >= 992) {
+            if (mainContent.style.marginLeft === '0px' || mainContent.style.marginLeft === '') {
+                mainContent.style.marginLeft = '280px';
+            } else {
+                mainContent.style.marginLeft = '0px';
+            }
         }
     });
 </script>

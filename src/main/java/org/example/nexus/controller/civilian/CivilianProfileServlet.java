@@ -19,12 +19,12 @@ public class CivilianProfileServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
 
-        if (session == null || session.getAttribute("user_id") == null) {
+        if (session == null || session.getAttribute("civilian_reg_id") == null) {
             resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp?error=Login+Required");
             return;
         }
 
-        int regId = (int) session.getAttribute("user_id");
+        int regId = (int) session.getAttribute("civilian_reg_id");
 
         // get profile
         CivilianRegistration civilian = service.getById(regId);

@@ -18,6 +18,7 @@ public class LogoutServlet extends HttpServlet {
             session.invalidate();
         }
 
-        resp.sendRedirect("login.jsp?msg=Logged Out Successfully");
+        // ALWAYS USE CONTEXT PATH
+        resp.sendRedirect(req.getContextPath() + "/index.jsp?msg=Logged+Out+Successfully");
     }
 }

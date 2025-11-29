@@ -4,6 +4,7 @@ package org.example.nexus.dao;
 import org.example.nexus.model.PoliceRegistration;
 import org.example.nexus.model.PoliceStation;
 import org.example.nexus.util.DBConnection;
+import org.example.nexus.util.PasswordUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -116,26 +117,48 @@ public class PoliceRegistrationDAO {
     }
 
     // LOGIN CHECK
-    public PoliceRegistration checkLogin(String email, String passwordHash) {
+    public PoliceRegistration checkLogin(String email, String plainPassword) {
 
-        String sql = "SELECT * FROM Police_Registration WHERE email=? AND password_hash=?";
+        String sql = "SELECT * FROM Police_Registration WHERE email=?";
         PoliceRegistration p = null;
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, email);
-            ps.setString(2, passwordHash);
-
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) p = getByEmail(email);
+            if (rs.next()) {
+
+                String storedHash = rs.getString("password_hash");
+                String generatedHash = PasswordUtil.hashPassword(plainPassword);
+
+                System.out.println("LOGIN HASH      = " + generatedHash);
+                System.out.println("DATABASE HASH   = " + storedHash);
+
+                if (storedHash.equalsIgnoreCase(generatedHash)) {
+                    p = new PoliceRegistration(
+                            rs.getInt("reg_id"),
+                            rs.getString("full_name"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            storedHash,
+                            rs.getString("rank_details"),
+                            rs.getInt("police_station_id"),
+                            rs.getString("joining_code"),
+                            rs.getTimestamp("created_at"),
+                            rs.getString("approval_status")
+                    );
+                }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return p;
     }
+
 
 
 

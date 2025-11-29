@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
 import org.example.nexus.model.Complaint;
 import org.example.nexus.model.PoliceDashboardStats;
 import org.example.nexus.service.PoliceDashboardService;
@@ -26,26 +27,23 @@ public class PoliceDashboardServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
 
+        // -------- Session Validation --------
         if (session == null || session.getAttribute("police_reg_id") == null) {
-            resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp");
+            resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp?error=Login+Required");
             return;
         }
 
-        // Extract logged-in police ID
-        Object regIdObj = session.getAttribute("police_reg_id");
-        int policeId;
+        // Get police ID
+        Integer policeId = (Integer) session.getAttribute("police_reg_id");
 
-        try {
-            policeId = Integer.parseInt(String.valueOf(regIdObj));
-        } catch (Exception e) {
-            // Invalid session data → force fresh login
+        if (policeId == null || policeId <= 0) {
             session.invalidate();
-            resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp");
+            resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp?error=Invalid+Session");
             return;
         }
 
         try {
-            // Fetch KPIs + Assigned Complaints
+            // -------- Dashboard Data Fetch --------
             PoliceDashboardStats stats = service.getStats(policeId);
             List<Complaint> assignedCases = service.getAssignedComplaints(policeId);
 
@@ -57,8 +55,7 @@ public class PoliceDashboardServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("error", "Unable to load dashboard. Try again.");
-            req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
+            resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp?error=Dashboard+Load+Failed");
         }
     }
 }

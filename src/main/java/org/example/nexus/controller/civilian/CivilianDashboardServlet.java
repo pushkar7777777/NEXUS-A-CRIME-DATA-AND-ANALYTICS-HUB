@@ -18,13 +18,13 @@ public class CivilianDashboardServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
 
-        if (session == null || session.getAttribute("user_id") == null) {
+        if (session == null || session.getAttribute("civilian_reg_id") == null)
+        {
             resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp?error=Login+Required");
             return;
         }
-
-        int reg_Id = (int) session.getAttribute("user_id");
-
+        int reg_Id = (int) session.getAttribute("civilian_reg_id");
+        System.out.println(reg_Id);
         // Fetch complaint details for logged-in civilian
         session.setAttribute("complaints", service.getComplaintsByUser(reg_Id));
         session.setAttribute("totalFiled", service.getTotalFiled(reg_Id));

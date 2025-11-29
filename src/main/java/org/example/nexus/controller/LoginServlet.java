@@ -61,8 +61,8 @@ public class LoginServlet extends HttpServlet {
                 /* -------------------- POLICE LOGIN -------------------- */
                 case "POLICE": {
                     PoliceRegistrationDAO pdao = new PoliceRegistrationDAO();
-                    PoliceRegistration police = pdao.checkLogin(email, hashed);
-
+                    PoliceRegistration police = pdao.checkLogin(email, password);
+                    System.out.println(password);
                     if (police != null) {
 
                         if (!"APPROVED".equalsIgnoreCase(police.getApprovalStatus())) {
@@ -99,9 +99,9 @@ public class LoginServlet extends HttpServlet {
                         session.setAttribute("role", "ADMIN");
                         session.setAttribute("user", admin);
 
-                        /** IMPORTANT FIX:
-                         * Redirect to servlet → not direct JSP
-                         */
+//                         IMPORTANT FIX:
+//                         * Redirect to servlet → not direct JSP
+//                         */
                         resp.sendRedirect(ctx + "/admin/dashboard");
                     } else {
                         resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Invalid+Admin+Credentials");
@@ -116,7 +116,7 @@ public class LoginServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Unexpected+Error+Occurred");
         }
     }

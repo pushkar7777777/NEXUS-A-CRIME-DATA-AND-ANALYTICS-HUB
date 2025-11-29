@@ -304,7 +304,8 @@
     </ul>
 
     <div class="sidebar-footer">
-        <a href="/${pageContext.request.contextPath}/index.jsp" class="btn btn-outline-light w-100 fw-bold">
+
+        <a href="<%= request.getContextPath() %>/logout" class="btn btn-outline-light w-100 fw-bold">
             <i class="fas fa-sign-out-alt me-2"></i> Logout
         </a>
     </div>

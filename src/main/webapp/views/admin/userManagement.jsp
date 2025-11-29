@@ -1,6 +1,9 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%-- This JSP assumes a list of 'userList' is passed from the controller --%>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
+<%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
+
+<%-- Expect attributes: userList (List<User>), session attributes --%>
 <c:set var="userList" value="${sessionScope.allUsers}"/>
 
 <!DOCTYPE html>
@@ -14,13 +17,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
         /* --- BRAND COLORS --- */
         :root {
             --nexus-dark: #1C3144;      /* Primary Dark Blue/Teal (Sidebar/Headings) */
-            --nexus-accent: #00A3FF;    /* Bright Blue/Cyan Accent (Links/Primary Action) */
+            --nexus-accent: #008be6;    /* Bright Blue/Cyan Accent (Links/Primary Action) */
             --nexus-light: #F0F4F8;     /* Light background */
             --sidebar-hover: #004d7a;
             --sidebar-active: #0055a4;
@@ -61,12 +63,16 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            color: #ffffff; /* Explicitly white for the text */
         }
         .nexus-brand svg path, .nexus-brand svg circle {
             stroke: var(--nexus-accent);
             fill: var(--nexus-accent);
         }
-        .nexus-brand svg path[d*="8l-3 5"] {
+        /* Overriding white stroke inside the custom icon */
+        .nexus-brand svg path[d*="8l-3 5"],
+        .nexus-brand svg path[d*="8l3 5"],
+        .nexus-brand svg path[d*="9 13h6"] {
             stroke: #fff;
         }
         .sidebar-nav {
@@ -118,13 +124,25 @@
         /* --- MAIN CONTENT / TOP NAVBAR / CARD STYLES --- */
         .main-content { margin-left: 280px; width: calc(100% - 280px); transition: all 0.3s; }
         .top-navbar { background-color: #ffffff; box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05); padding: 1rem 2rem; position: sticky; top: 0; z-index: 999; }
-        .top-navbar .btn-nexus { background: var(--nexus-accent); border: 1px solid var(--nexus-accent); color: var(--nexus-dark); font-weight: 600; transition: all 0.3s; }
-        .top-navbar .btn-nexus:hover { background: #008be6; border-color: #008be6; color: #fff; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0, 163, 255, 0.3); }
+        .btn-nexus { background: var(--nexus-accent) !important; border: 1px solid var(--nexus-accent) !important; color: white !important; font-weight: 600; transition: all 0.3s; }
+        .btn-nexus:hover { background: #007bbd !important; border-color: #007bbd !important; color: white !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0, 163, 255, 0.3); }
         .main-card { border: 1px solid #e0e0e0; border-radius: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); background: white; padding: 1.5rem; }
         .card-header-custom { border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;}
         .card-header-custom h5 { color: var(--nexus-dark); font-weight: 700; }
-        .badge-verified { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .badge-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+        /* --- DYNAMIC BADGES (Matching Dashboard Theme) --- */
+        /* Status */
+        .badge-verified { background-color: #28a745; color: #fff; } /* Green */
+        .badge-pending { background-color: #ffc107; color: var(--nexus-dark); } /* Yellow */
+        .badge-suspended { background-color: #dc3545; color: #fff; } /* Red */
+        .badge-active { background-color: #28a745; color: #fff; }
+        .badge-inactive { background-color: #6c757d; color: #fff; }
+
+        /* Roles */
+        .badge-role-police { background-color: var(--nexus-accent); color: white; }
+        .badge-role-admin { background-color: var(--nexus-dark); color: white; }
+        .badge-role-civilian { background-color: #8c8c8c; color: white; }
+
 
         /* Responsive collapse logic */
         @media (max-width: 991.98px) { .sidebar { margin-left: -280px; } .main-content { margin-left: 0; width: 100%; } .sidebar.active { margin-left: 0; } }
@@ -136,16 +154,11 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="nexus-brand animate__animated animate__fadeIn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--nexus-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <circle cx="12" cy="8" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
-                <circle cx="9" cy="13" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
-                <circle cx="15" cy="13" r="1.5" fill="var(--nexus-accent)" stroke="none"/>
-                <path d="M12 8l-3 5" stroke="#fff"/>
-                <path d="M12 8l3 5" stroke="#fff"/>
-                <path d="M9 13h6" stroke="#fff"/>
+            <!-- Updated SVG to match the requested look (Shield with checkmark) -->
+            <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.88 12.82l-2.58-2.58L6.47 12l2.05 2.05 4.49-4.49 1.06 1.06-5.55 5.55z"/>
             </svg>
-            NEXUS
+            NEXUS HUB
         </div>
     </div>
 
@@ -253,17 +266,34 @@
                                 <tr>
                                     <td class="ps-4 fw-bold text-primary">#${user.regId}</td>
                                     <td>${user.fullName}</td>
-                                    <td><span class="badge bg-secondary">${user.role}</span></td>
+                                    <td>
+                                            <%-- Dynamic Role Badge --%>
+                                        <span class="badge
+                                        <c:choose>
+                                            <c:when test="${user.role == 'POLICE'}">badge-role-police</c:when>
+                                            <c:when test="${user.role == 'ADMIN'}">badge-role-admin</c:when>
+                                            <c:otherwise>badge-role-civilian</c:otherwise>
+                                        </c:choose>
+                                        ">${user.role}</span>
+                                    </td>
                                     <td>${user.email}</td>
                                     <td>
-                                            <span class="badge ${user.status == 'VERIFIED' ? 'badge-verified' : 'badge-pending'} fw-semibold">
-                                                    ${user.status}
-                                            </span>
+                                            <%-- Dynamic Verification Badge --%>
+                                        <span class="badge rounded-pill
+                                                <c:choose>
+                                                    <c:when test="${user.status == 'VERIFIED'}">badge-verified</c:when>
+                                                    <c:when test="${user.status == 'PENDING'}">badge-pending</c:when>
+                                                    <c:otherwise>badge-suspended</c:otherwise>
+                                                </c:choose>
+                                                fw-semibold">
+                                                ${user.status}
+                                        </span>
                                     </td>
                                     <td>
-                                            <span class="badge rounded-pill ${user.isActive ? 'bg-success' : 'bg-danger'}">
-                                                    ${user.isActive ? 'Active' : 'Suspended'}
-                                            </span>
+                                            <%-- Dynamic Active Status Badge --%>
+                                        <span class="badge rounded-pill ${user.isActive ? 'badge-active' : 'badge-inactive'}">
+                                                ${user.isActive ? 'Active' : 'Suspended'}
+                                        </span>
                                     </td>
                                     <td>
                                         <div class="dropdown">
@@ -293,6 +323,7 @@
     </div>
 </div>
 <%-- 3. JAVASCRIPT --%>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 800, once: true });
@@ -306,10 +337,12 @@
         sidebar.classList.toggle('active');
 
         // Toggle the margin-left for desktop
-        if (mainContent.style.marginLeft === '0px' || mainContent.style.marginLeft === '') {
-            mainContent.style.marginLeft = '280px';
-        } else {
-            mainContent.style.marginLeft = '0px';
+        if (window.innerWidth >= 992) {
+            if (mainContent.style.marginLeft === '0px' || mainContent.style.marginLeft === '') {
+                mainContent.style.marginLeft = '280px';
+            } else {
+                mainContent.style.marginLeft = '0px';
+            }
         }
     });
 </script>
