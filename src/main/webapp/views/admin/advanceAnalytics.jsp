@@ -3,6 +3,20 @@
 <%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 
+<%
+    // AUTH GUARD - You should place the AUTH GUARD logic here if the servlet
+    // is not explicitly handling authorization before forwarding.
+    // Example:
+    /*
+    HttpSession sessionObj = request.getSession(false);
+    if (sessionObj == null || sessionObj.getAttribute("role") == null ||
+            !"ADMIN".equals(sessionObj.getAttribute("role"))) {
+        response.sendRedirect(request.getContextPath() + "/views/auth/login.jsp?error=Unauthorized+Access");
+        return;
+    }
+    */
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +36,6 @@
             --nexus-dark: #1C3144;      /* Primary Dark Blue/Teal (Sidebar/Headings) */
             --nexus-accent: #008be6;    /* Bright Blue/Cyan Accent (Links/Primary Action) */
             --nexus-light: #F0F4F8;     /* Light background */
-            --sidebar-hover: #004d7a;
             --sidebar-active: #0055a4;
         }
 
@@ -63,14 +76,8 @@
             gap: 10px;
             color: #ffffff;
         }
-        .nexus-brand svg { /* Custom SVG Shield with checkmark */
-            width: 28px;
-            height: 28px;
-            fill: var(--nexus-accent);
-        }
-        .sidebar-nav {
-            padding-top: 1rem;
-        }
+        .nexus-brand svg { width: 28px; height: 28px; fill: var(--nexus-accent); }
+        .sidebar-nav { padding-top: 1rem; }
         .sidebar-nav .nav-link {
             color: rgba(255,255,255,0.8);
             padding: 1rem 2rem;
@@ -91,10 +98,6 @@
             color: #ffffff;
             padding-left: 2.5rem;
         }
-        .sidebar-nav .nav-link:hover i {
-            transform: scale(1.1);
-            color: var(--nexus-accent);
-        }
         .sidebar-nav .nav-link.active {
             background: var(--sidebar-active);
             color: #ffffff;
@@ -109,24 +112,31 @@
             padding: 1.5rem;
             background: rgba(0,0,0,0.2);
         }
-        .sidebar-footer .btn-outline-light {
-            border-color: rgba(255,255,255,0.3);
-            font-weight: 600;
-        }
 
-        /* --- MAIN CONTENT / TOP NAVBAR / CARD STYLES --- */
+        /* --- MAIN CONTENT / CARD STYLES --- */
         .main-content { margin-left: 280px; width: calc(100% - 280px); transition: all 0.3s; }
         .top-navbar { background-color: #ffffff; box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05); padding: 1rem 2rem; position: sticky; top: 0; z-index: 999; }
-        .btn-nexus { background: var(--nexus-accent) !important; border: 1px solid var(--nexus-accent) !important; color: white !important; font-weight: 600; transition: all 0.3s; }
-        .btn-nexus:hover { background: #007bbd !important; border-color: #007bbd !important; color: white !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0, 163, 255, 0.3); }
+
         .main-card { border: 1px solid #e0e0e0; border-radius: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); background: white; padding: 1.5rem; }
-        .main-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
         .card-header-custom { border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;}
         .card-header-custom h5 { color: var(--nexus-dark); font-weight: 700; }
+
+        /* KPI Card Styling */
         .kpi-stat-number { font-size: 2.5rem; font-weight: 900; color: var(--nexus-dark); }
         .kpi-stat-label { font-size: 0.9rem; font-weight: 600; color: #666; }
-        .kpi-card { border-left: 5px solid var(--nexus-accent); border-radius: 10px; padding: 1rem; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.3s; }
-        .kpi-card:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+        .kpi-card {
+            border-left: 5px solid var(--nexus-accent);
+            border-radius: 10px;
+            padding: 1rem;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            height: 100%;
+        }
+        .kpi-card:hover {
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
 
 
         /* Responsive collapse logic */
@@ -139,7 +149,6 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="nexus-brand animate__animated animate__fadeIn">
-            <!-- SVG Shield Icon with checkmark -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.88 12.82l-2.58-2.58L6.47 12l2.05 2.05 4.49-4.49 1.06 1.06-5.55 5.55z"/>
             </svg>
@@ -149,45 +158,40 @@
 
     <ul class="nav flex-column sidebar-nav">
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/adminDashboard.jsp">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard">
                 <i class="fas fa-tachometer-alt"></i> Dashboard
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/userManagement.jsp">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/user-management">
                 <i class="fas fa-users-cog"></i> User Management
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/complaintMonitor.jsp">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/complaint-monitor">
                 <i class="fas fa-tasks"></i> Complaint Monitor
             </a>
         </li>
         <li class="nav-item">
-            <%-- Set 'active' class for the current page: Advanced Analytics --%>
-            <a class="nav-link active" href="${pageContext.request.contextPath}/views/admin/advanceAnalytics.jsp">
+            <a class="nav-link active" href="${pageContext.request.contextPath}/admin/analytics">
                 <i class="fas fa-chart-line"></i> Advanced Analytics
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/station-directory">
                 <i class="fas fa-building"></i> Station/Dept.
             </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" href="#">
-                <i class="fas fa-clipboard-list"></i> System Logs
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#alertModal">
+            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/broadcast_aleart.jsp" data-bs-toggle="modal" data-bs-target="#alertModal">
                 <i class="fas fa-bullhorn"></i> Broadcast Alert
             </a>
         </li>
     </ul>
 
     <div class="sidebar-footer">
-        <a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-outline-light w-100 btn-sm fw-bold">
+        <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-light w-100 btn-sm fw-bold">
             <i class="fas fa-sign-out-alt me-2"></i> Logout
         </a>
     </div>
@@ -209,35 +213,67 @@
     <div class="container-fluid p-4">
         <h3 class="fw-bold text-dark mb-4"><i class="fas fa-chart-line me-2 text-secondary"></i> Advanced System Analytics</h3>
 
-        <!-- KPI STATS -->
         <div class="row g-4 mb-5">
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="kpi-card" style="border-left-color: #4caf50;">
-                    <div class="kpi-stat-number">18.5 hrs</div>
-                    <div class="kpi-stat-label">Avg. Resolution Time</div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="kpi-card" style="border-left-color: #ff9800;">
-                    <div class="kpi-stat-number">92%</div>
-                    <div class="kpi-stat-label">Success Rate (Solved)</div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
                 <div class="kpi-card" style="border-left-color: #007bff;">
-                    <div class="kpi-stat-number">2500+</div>
-                    <div class="kpi-stat-label">Verified Civilians</div>
+                    <div class="kpi-stat-number">${totalPolice}</div>
+                    <div class="kpi-stat-label">Total Police Officers</div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="kpi-card" style="border-left-color: #f44336;">
-                    <div class="kpi-stat-number">12:1</div>
-                    <div class="kpi-stat-label">Civilian/Officer Ratio</div>
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+                <div class="kpi-card" style="border-left-color: #28a745;">
+                    <div class="kpi-stat-number">${totalCivilians}</div>
+                    <div class="kpi-stat-label">Total Civilians Registered</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="300">
+                <div class="kpi-card" style="border-left-color: #ff9800;">
+                    <div class="kpi-stat-number">${totalStations}</div>
+                    <div class="kpi-stat-label">Active Police Stations</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="400">
+                <div class="kpi-card" style="border-left-color: #673ab7;">
+                    <div class="kpi-stat-number">${totalComplaints}</div>
+                    <div class="kpi-stat-label">Total Complaints Filed</div>
                 </div>
             </div>
         </div>
-        <!-- END KPI STATS -->
 
+        <div class="row g-4 mb-5">
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="kpi-card" style="border-left-color: #4caf50;">
+                    <div class="kpi-stat-number">${resolvedComplaints}</div>
+                    <div class="kpi-stat-label">Cases Marked Resolved</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="kpi-card" style="border-left-color: #ff5722;">
+                    <div class="kpi-stat-number">${investigationComplaints}</div>
+                    <div class="kpi-stat-label">Currently Under Investigation</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="kpi-card" style="border-left-color: #03a9f4;">
+                    <div class="kpi-stat-number">${assignedComplaints}</div>
+                    <div class="kpi-stat-label">Total Cases Assigned</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="kpi-card" style="border-left-color: #e91e63;">
+                    <div class="kpi-stat-number">${unassignedComplaints}</div>
+                    <div class="kpi-stat-label">Unassigned Complaints (Pending Review)</div>
+                </div>
+            </div>
+        </div>
         <div class="row g-4 mb-4">
             <div class="col-lg-6" data-aos="fade-right">
                 <div class="main-card">
@@ -250,7 +286,7 @@
             <div class="col-lg-6" data-aos="fade-left">
                 <div class="main-card">
                     <div class="card-header-custom">
-                        <h5 class="fw-bold mb-0"><i class="fas fa-map-marker-alt me-2"></i> Top 5 Incident Types</h5>
+                        <h5 class="fw-bold mb-0"><i class="fas fa-location-arrow me-2"></i> Top 5 Incident Types</h5>
                     </div>
                     <canvas id="typeChart" style="max-height: 350px;"></canvas>
                 </div>
@@ -274,10 +310,11 @@
 
         // Toggle the margin-left for desktop
         if (window.innerWidth >= 992) {
-            if (mainContent.style.marginLeft === '0px' || mainContent.style.marginLeft === '') {
-                mainContent.style.marginLeft = '280px';
+            // Check if the sidebar is currently off-screen (due to previous toggle)
+            if (sidebar.classList.contains('active')) {
+                mainContent.style.marginLeft = '280px'; // Push content back
             } else {
-                mainContent.style.marginLeft = '0px';
+                mainContent.style.marginLeft = '0px'; // Remove content margin (hides sidebar)
             }
         }
     });

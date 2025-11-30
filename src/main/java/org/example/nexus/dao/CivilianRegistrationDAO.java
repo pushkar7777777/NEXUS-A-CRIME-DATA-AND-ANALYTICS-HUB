@@ -56,6 +56,17 @@ public class CivilianRegistrationDAO {
     }
 
 
+    public int countAll() {
+        String sql = "SELECT COUNT(*) FROM civilian_registration";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
 
     // GET BY EMAIL
     public CivilianRegistration getByEmail(String email) {
@@ -178,6 +189,7 @@ public class CivilianRegistrationDAO {
         }
         return list;
     }
+
     public CivilianRegistration getById(int regId) {
         CivilianRegistration c = null;
 
@@ -231,6 +243,67 @@ public class CivilianRegistrationDAO {
 
         return c;
     }
+    public boolean update(CivilianRegistration civ) {
+        String sql = "UPDATE Civilian_Registration SET full_name=?, email=?, phone=?, national_id=?, date_of_birth=?, gender=?, status=? WHERE reg_id=?";
 
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, civ.getFullName());
+            ps.setString(2, civ.getEmail());
+            ps.setString(3, civ.getPhone());
+            ps.setString(4, civ.getNationalId());
+            ps.setObject(5, civ.getDateOfBirth()); // works for LocalDate
+            ps.setString(6, civ.getGender());
+            ps.setString(7, civ.getStatus());
+            ps.setInt(8, civ.getRegId());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public CivilianRegistration findById(int regId) {
+        String sql = "SELECT reg_id, full_name, email, phone, status FROM Civilian_Registration WHERE reg_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, regId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    CivilianRegistration civ = new CivilianRegistration();
+                    civ.setRegId(rs.getInt("reg_id"));
+                    civ.setFullName(rs.getString("full_name"));
+                    civ.setEmail(rs.getString("email"));
+                    civ.setPhone(rs.getString("phone"));
+                    civ.setStatus(rs.getString("status"));
+                    return civ;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public boolean delete(int regId) {
+        String sql = "DELETE FROM Civilian_Registration WHERE reg_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, regId);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
 }

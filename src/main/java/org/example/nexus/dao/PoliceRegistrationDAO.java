@@ -10,6 +10,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.nexus.util.DBConnection.getConnection;
+
 public class PoliceRegistrationDAO {
 
     // INSERT
@@ -17,7 +19,7 @@ public class PoliceRegistrationDAO {
 
         String sql = "INSERT INTO Police_Registration(full_name, email, phone, password_hash, rank_details, police_station_id, joining_code) VALUES (?,?,?,?,?,?,?)";
 
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, police.getFullName());
@@ -43,7 +45,7 @@ public class PoliceRegistrationDAO {
 
         String sql = "UPDATE Police_Registration SET approval_status=? WHERE reg_id=?";
 
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, status);
@@ -65,7 +67,7 @@ public class PoliceRegistrationDAO {
         String sql = "SELECT * FROM Police_Registration WHERE email=?";
         PoliceRegistration p = null;
 
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, email);
@@ -98,7 +100,7 @@ public class PoliceRegistrationDAO {
         List<PoliceStation> list = new ArrayList<>();
 
         try {
-            Connection con = DBConnection.getConnection();
+            Connection con = getConnection();
             String sql = "SELECT police_station_id, station_name FROM police_stations";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -122,7 +124,7 @@ public class PoliceRegistrationDAO {
         String sql = "SELECT * FROM Police_Registration WHERE email=?";
         PoliceRegistration p = null;
 
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, email);
@@ -158,6 +160,36 @@ public class PoliceRegistrationDAO {
 
         return p;
     }
+    public int countOfficersByStation(int stationId) {
+        String sql = "SELECT COUNT(*) FROM police_registration WHERE police_station_id = ? AND approval_status = 'APPROVED'";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, stationId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);  // officer count
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+    public int countAll() {
+        String sql = "SELECT COUNT(*) FROM police_registration";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) return rs.getInt(1);
+
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
 
 
 
@@ -168,7 +200,7 @@ public class PoliceRegistrationDAO {
         List<PoliceRegistration> list = new ArrayList<>();
         String sql = "SELECT * FROM Police_Registration ORDER BY reg_id DESC";
 
-        try (Connection conn = DBConnection.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -193,4 +225,74 @@ public class PoliceRegistrationDAO {
         }
         return list;
     }
+    public boolean delete(int regId) {
+        String sql = "DELETE FROM Police_Registration WHERE reg_id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, regId);
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    public boolean updateStatus(int regId, String status) {
+        String sql = "UPDATE Police_Registration SET approval_status = ? WHERE reg_id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            ps.setInt(2, regId);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    public List<PoliceRegistration> getOfficersByStation(int stationId) {
+
+        List<PoliceRegistration> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM police_registration " +
+                "WHERE police_station_id = ? AND approval_status = 'APPROVED'";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, stationId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                PoliceRegistration p = new PoliceRegistration();
+
+                p.setRegId(rs.getInt("reg_id"));
+                p.setFullName(rs.getString("full_name"));
+                p.setEmail(rs.getString("email"));
+                p.setPhone(rs.getString("phone"));
+                p.setPasswordHash(rs.getString("password_hash"));
+                p.setRankDetails(rs.getString("rank_details"));
+                p.setPoliceStationId(rs.getInt("police_station_id"));
+                p.setJoiningCode(rs.getString("joining_code"));
+                p.setCreatedAt(rs.getTimestamp("created_at"));
+                p.setApprovalStatus(rs.getString("approval_status"));
+
+                list.add(p);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 }

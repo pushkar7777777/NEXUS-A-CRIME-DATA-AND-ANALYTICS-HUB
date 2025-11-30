@@ -12,6 +12,9 @@ public class PoliceStation {
     private String contactNumber;
     private String email;
     private Timestamp createdOn;
+    private int officerCount;
+    public int getOfficerCount() { return officerCount; }
+    public void setOfficerCount(int officerCount) { this.officerCount = officerCount; }
 
     public PoliceStation() {}
 

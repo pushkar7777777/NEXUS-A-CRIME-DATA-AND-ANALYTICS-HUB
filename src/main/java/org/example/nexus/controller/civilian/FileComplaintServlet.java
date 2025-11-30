@@ -20,7 +20,7 @@ public class FileComplaintServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = req.getSession(false);
-        Integer regId = (Integer) session.getAttribute("user_id");
+        Integer regId = (Integer) session.getAttribute("civilian_reg_id");
 
         if (regId == null) {
             resp.sendRedirect(req.getContextPath() + "/views/auth/login.jsp?error=Login+Required");

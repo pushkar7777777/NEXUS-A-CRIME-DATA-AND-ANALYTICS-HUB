@@ -3,7 +3,11 @@
 <%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 <%@ taglib uri="jakarta.tags.functions" prefix="fn" %>
 
-<%-- Mock data structure for demonstration --%>
+<%--
+    NOTE: The AUTH GUARD logic should be moved to the beginning of this file
+    if the servlet is mapped to a different URL (not directly to the JSP path).
+    Assuming the Servlet handles security check and forwards here.
+--%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,10 +24,9 @@
     <style>
         /* --- BRAND COLORS --- */
         :root {
-            --nexus-dark: #1C3144;      /* Primary Dark Blue/Teal (Sidebar/Headings) */
-            --nexus-accent: #008be6;    /* Bright Blue/Cyan Accent (Links/Primary Action) */
-            --nexus-light: #F0F4F8;     /* Light background */
-            --sidebar-hover: #004d7a;
+            --nexus-dark: #1C3144;
+            --nexus-accent: #008be6;
+            --nexus-light: #F0F4F8;
             --sidebar-active: #0055a4;
         }
 
@@ -44,7 +47,6 @@
             position: fixed;
             height: 100%;
             overflow-y: auto;
-            transition: all 0.3s;
             z-index: 1000;
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
@@ -64,38 +66,18 @@
             gap: 10px;
             color: #ffffff;
         }
-        .nexus-brand svg { /* Custom SVG Shield with checkmark */
-            width: 28px;
-            height: 28px;
-            fill: var(--nexus-accent);
-        }
-        .sidebar-nav {
-            padding-top: 1rem;
-        }
+        .nexus-brand svg { width: 28px; height: 28px; fill: var(--nexus-accent); }
+        .sidebar-nav { padding-top: 1rem; }
         .sidebar-nav .nav-link {
             color: rgba(255,255,255,0.8);
             padding: 1rem 2rem;
             font-weight: 500;
             display: flex;
             align-items: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-left: 4px solid transparent;
         }
-        .sidebar-nav .nav-link i {
-            margin-right: 1rem;
-            width: 25px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        .sidebar-nav .nav-link:hover {
-            background-color: rgba(255,255,255,0.05);
-            color: #ffffff;
-            padding-left: 2.5rem;
-        }
-        .sidebar-nav .nav-link:hover i {
-            transform: scale(1.1);
-            color: var(--nexus-accent);
-        }
+        .sidebar-nav .nav-link i { margin-right: 1rem; width: 25px; text-align: center;}
+        .sidebar-nav .nav-link:hover { background-color: rgba(255,255,255,0.05); color: #ffffff; padding-left: 2.5rem; }
         .sidebar-nav .nav-link.active {
             background: var(--sidebar-active);
             color: #ffffff;
@@ -110,10 +92,7 @@
             padding: 1.5rem;
             background: rgba(0,0,0,0.2);
         }
-        .sidebar-footer .btn-outline-light {
-            border-color: rgba(255,255,255,0.3);
-            font-weight: 600;
-        }
+        .sidebar-footer .btn-outline-light { border-color: rgba(255,255,255,0.3); font-weight: 600; }
 
         /* --- MAIN CONTENT / TOP NAVBAR / CARD STYLES --- */
         .main-content { margin-left: 280px; width: calc(100% - 280px); transition: all 0.3s; }
@@ -121,7 +100,6 @@
         .btn-nexus { background: var(--nexus-accent) !important; border: 1px solid var(--nexus-accent) !important; color: white !important; font-weight: 600; transition: all 0.3s; }
         .btn-nexus:hover { background: #007bbd !important; border-color: #007bbd !important; color: white !important; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0, 163, 255, 0.3); }
         .main-card { border: 1px solid #e0e0e0; border-radius: 15px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); background: white; padding: 1.5rem; }
-        .main-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
         .card-header-custom { border-bottom: 1px solid #eee; padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;}
         .card-header-custom h5 { color: var(--nexus-dark); font-weight: 700; }
 
@@ -139,7 +117,6 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="nexus-brand animate__animated animate__fadeIn">
-            <!-- SVG Shield Icon with checkmark -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.88 12.82l-2.58-2.58L6.47 12l2.05 2.05 4.49-4.49 1.06 1.06-5.55 5.55z"/>
             </svg>
@@ -149,45 +126,40 @@
 
     <ul class="nav flex-column sidebar-nav">
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/adminDashboard.jsp">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/dashboard">
                 <i class="fas fa-tachometer-alt"></i> Dashboard
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/userManagement.jsp">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/user-management">
                 <i class="fas fa-users-cog"></i> User Management
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/complaintMonitor.jsp">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/complaint-monitor">
                 <i class="fas fa-tasks"></i> Complaint Monitor
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/advanceAnalytics.jsp">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/analytics">
                 <i class="fas fa-chart-line"></i> Advanced Analytics
             </a>
         </li>
         <li class="nav-item">
-            <%-- Set 'active' class for the current page: Station/Dept. --%>
-            <a class="nav-link active" href="${pageContext.request.contextPath}/views/admin/station_department.jsp">
+            <a class="nav-link" href="${pageContext.request.contextPath}/admin/station-directory">
                 <i class="fas fa-building"></i> Station/Dept.
             </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" href="#">
-                <i class="fas fa-clipboard-list"></i> System Logs
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#alertModal">
+            <a class="nav-link" href="${pageContext.request.contextPath}/views/admin/broadcast_aleart.jsp" data-bs-toggle="modal" data-bs-target="#alertModal">
                 <i class="fas fa-bullhorn"></i> Broadcast Alert
             </a>
         </li>
     </ul>
 
     <div class="sidebar-footer">
-        <a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-outline-light w-100 btn-sm fw-bold">
+        <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-light w-100 btn-sm fw-bold">
             <i class="fas fa-sign-out-alt me-2"></i> Logout
         </a>
     </div>
@@ -232,6 +204,7 @@
                             <option>Police</option>
                             <option>Traffic</option>
                             <option>Cyber Crime</option>
+                            <option>Special Operations</option>
                         </select>
                     </div>
 
@@ -245,68 +218,86 @@
                                 <th>Address</th>
                                 <th>Officers</th>
                                 <th>Status</th>
-                                <th>Chief</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <c:forEach var="station" items="${stationList}">
-                                <tr>
-                                    <td class="ps-4 fw-bold text-primary">#S-${station.stationId}</td>
-                                    <td>${station.stationName}</td>
-                                    <td><span class="badge bg-secondary">${station.department}</span></td>
-                                    <td class="small text-muted">${station.address}</td>
-                                    <td>${station.officerCount}</td>
-                                    <td>
-                                            <span class="badge rounded-pill badge-status-
-                                            <c:choose>
-                                                <c:when test='${station.isActive}'>active</c:when>
-                                                <c:otherwise>inactive</c:otherwise>
-                                            </c:choose> fw-semibold">
-                                                    ${station.isActive ? 'Active' : 'Decommissioned'}
-                                            </span>
-                                    </td>
-                                    <td class="small">${station.chiefName}</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary border" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></button>
-                                            <ul class="dropdown-menu dropdown-menu-end shadow animate__animated animate__fadeIn">
-                                                <li><a class="dropdown-item small view-btn" href="#"
-                                                       data-bs-toggle="modal" data-bs-target="#stationModal" data-mode="view"
-                                                       data-id="${station.stationId}"
-                                                       data-name="${station.stationName}"
-                                                       data-dept="${station.department}"
-                                                       data-address="${station.address}"
-                                                       data-chief="${station.chiefName}"
-                                                       data-officers="${station.officerCount}"
-                                                       data-active="${station.isActive ? 'Active' : 'Inactive'}">
-                                                    <i class="fas fa-eye me-2"></i> View Details
-                                                </a></li>
-                                                <li><a class="dropdown-item small edit-btn" href="#"
-                                                       data-bs-toggle="modal" data-bs-target="#stationModal" data-mode="edit"
-                                                       data-id="${station.stationId}"
-                                                       data-name="${station.stationName}"
-                                                       data-dept="${station.department}"
-                                                       data-address="${station.address}"
-                                                       data-chief="${station.chiefName}"
-                                                       data-officers="${station.officerCount}"
-                                                       data-is-active="${station.isActive ? 'true' : 'false'}">
-                                                    <i class="fas fa-edit me-2"></i> Edit Record
-                                                </a></li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li><a class="dropdown-item small text-danger delete-btn" href="#"
-                                                       data-id="${station.stationId}" data-name="${station.stationName}">
-                                                    <i class="fas fa-trash-alt me-2"></i> Delete
-                                                </a></li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                            <c:if test="${empty stationList}">
-                                <tr><td colspan="8" class="text-center text-muted p-4">No station records found.</td></tr>
-                            </c:if>
+                            <c:choose>
+                                <c:when test="${not empty stationList}">
+                                    <c:forEach var="station" items="${stationList}">
+                                        <tr>
+                                            <td class="ps-4 fw-bold text-primary">S-${station.policeStationId}</td>
+
+                                            <td>${station.stationName}</td>
+
+                                            <td><span class="badge bg-secondary">${station.jurisdictionArea}</span></td>
+
+                                            <td class="small text-muted">${station.location}</td>
+
+                                            <td>${station.officerCount}</td> <!-- officerCount does NOT exist in your model -->
+
+                                            <td>
+                                                <span class="badge bg-info">Active</span>
+                                            </td>
+                                            <!-- chiefName does not exist -->
+
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm btn-outline-secondary border" data-bs-toggle="dropdown">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                                                        <li>
+                                                            <a class="dropdown-item small"
+                                                               href="#"
+                                                               data-bs-toggle="modal"
+                                                               data-bs-target="#stationModal"
+                                                               data-mode="view"
+                                                               data-id="${station.policeStationId}"
+                                                               data-name="${station.stationName}"
+                                                               data-dept="${station.jurisdictionArea}"
+                                                               data-address="${station.location}">
+                                                                <i class="fas fa-eye me-2"></i> View Details
+                                                            </a>
+                                                        </li>
+
+                                                        <li>
+                                                            <a class="dropdown-item small"
+                                                               href="#"
+                                                               data-bs-toggle="modal"
+                                                               data-bs-target="#stationModal"
+                                                               data-mode="edit"
+                                                               data-id="${station.policeStationId}"
+                                                               data-name="${station.stationName}"
+                                                               data-dept="${station.jurisdictionArea}"
+                                                               data-address="${station.location}">
+                                                                <i class="fas fa-edit me-2"></i> Edit Record
+                                                            </a>
+                                                        </li>
+
+                                                        <li><hr class="dropdown-divider"></li>
+
+                                                        <li>
+                                                            <a class="dropdown-item small text-danger delete-btn"
+                                                               href="#"
+                                                               data-id="${station.policeStationId}"
+                                                               data-name="${station.stationName}">
+                                                                <i class="fas fa-trash-alt me-2"></i> Delete
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:when>
+                                <c:otherwise>
+                                    <tr><td colspan="8" class="text-center text-muted p-4">No station records found.</td></tr>
+                                </c:otherwise>
+                            </c:choose>
                             </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -327,6 +318,11 @@
             <form id="stationForm" method="post" action="${pageContext.request.contextPath}/admin/saveStation">
                 <div class="modal-body p-4">
                     <input type="hidden" name="stationId" id="modalStationId">
+
+                    <div id="readOnlyView" class="mb-3 d-none">
+                        <p class="mb-1 fw-bold small text-secondary">Station ID:</p>
+                        <p class="mb-3 fw-bold text-primary" id="viewStationId"></p>
+                    </div>
 
                     <div class="mb-3">
                         <label for="stationName" class="form-label fw-bold small">Station Name</label>
@@ -363,11 +359,6 @@
                         <input class="form-check-input" type="checkbox" id="isActive" name="isActive" checked>
                         <label class="form-check-label fw-bold small" for="isActive">Active Status</label>
                     </div>
-
-                    <div id="viewDetails" class="alert alert-info small d-none">
-                        <p class="mb-1"><strong>Officer Count:</strong> <span id="viewOfficerCount"></span></p>
-                        <p class="mb-0"><strong>Status:</strong> <span id="viewStatus"></span></p>
-                    </div>
                 </div>
 
                 <div class="modal-footer bg-light border-0">
@@ -402,19 +393,24 @@
         const form = document.getElementById('stationForm');
         const modalTitle = document.getElementById('stationModalLabel');
         const submitButton = document.getElementById('modalSubmitButton');
+        const readOnlyView = document.getElementById('readOnlyView');
 
         stationModal.addEventListener('show.bs.modal', function (event) {
             const relatedTarget = event.relatedTarget;
             const mode = relatedTarget.getAttribute('data-mode');
+            const data = relatedTarget.dataset;
 
-            // Reset form visibility and fields
+            // --- Reset View ---
             form.reset();
-            document.getElementById('viewDetails').classList.add('d-none');
+            readOnlyView.classList.add('d-none');
             document.getElementById('statusSwitchContainer').classList.remove('d-none');
-
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => input.removeAttribute('readonly'));
             submitButton.classList.remove('d-none');
+            submitButton.disabled = false;
+
+            const inputs = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+            inputs.forEach(input => input.removeAttribute('readonly'));
+            inputs.forEach(input => input.disabled = false);
+
 
             // Handle different modes
             if (mode === 'add') {
@@ -425,30 +421,31 @@
                 document.getElementById('isActive').checked = true;
 
             } else if (mode === 'edit' || mode === 'view') {
-                const data = relatedTarget.dataset;
                 const stationId = data.id;
 
+                // --- Populate Fields ---
                 document.getElementById('modalStationId').value = stationId;
                 document.getElementById('stationName').value = data.name;
                 document.getElementById('department').value = data.dept;
                 document.getElementById('address').value = data.address;
                 document.getElementById('chiefName').value = data.chief;
                 document.getElementById('officerCount').value = data.officers;
-                document.getElementById('isActive').checked = data.isActive === 'true';
+                document.getElementById('isActive').checked = data.isActive === 'true'; // Note: data-is-active vs isActive
+                document.getElementById('viewStationId').innerText = `#S-${stationId}`;
+
 
                 if (mode === 'edit') {
-                    modalTitle.innerHTML = `<i class="fas fa-edit me-2"></i> Edit Station #${stationId}`;
+                    modalTitle.innerHTML = `<i class="fas fa-edit me-2"></i> Edit Station #S-${stationId}`;
                     submitButton.innerText = 'Save Changes';
                     form.action = '${pageContext.request.contextPath}/admin/updateStation';
                 }
 
                 if (mode === 'view') {
-                    modalTitle.innerHTML = `<i class="fas fa-eye me-2"></i> View Station Details #${stationId}`;
+                    modalTitle.innerHTML = `<i class="fas fa-eye me-2"></i> View Station Details #S-${stationId}`;
+                    readOnlyView.classList.remove('d-none');
                     inputs.forEach(input => input.setAttribute('readonly', 'readonly'));
+                    inputs.forEach(input => input.disabled = true); // Disable for true read-only status
                     document.getElementById('statusSwitchContainer').classList.add('d-none');
-                    document.getElementById('viewDetails').classList.remove('d-none');
-                    document.getElementById('viewOfficerCount').innerText = data.officers;
-                    document.getElementById('viewStatus').innerText = data.active;
                     submitButton.classList.add('d-none'); // Hide submit button in view mode
                 }
             }
@@ -464,24 +461,12 @@
                 if (confirm(`Are you sure you want to delete the station: ${stationName} (#S-${stationId})? This action cannot be undone.`)) {
                     // Implement actual deletion logic here, likely a POST request to a delete servlet
                     alert(`Simulating deletion of Station #S-${stationId}`);
-                    // window.location.href = '${pageContext.request.contextPath}/admin/deleteStation?id=' + stationId;
+                    window.location.href = '${pageContext.request.contextPath}/admin/deleteStation?id=' + stationId;
                 }
             });
         });
     });
 
-    // Mock Class for compilation (replace with actual Java class definition)
-    class Station {
-        constructor(stationId, stationName, address, department, officerCount, isActive, chiefName) {
-            this.stationId = stationId;
-            this.stationName = stationName;
-            this.address = address;
-            this.department = department;
-            this.officerCount = officerCount;
-            this.isActive = isActive;
-            this.chiefName = chiefName;
-        }
-    }
 </script>
 </body>
 </html>

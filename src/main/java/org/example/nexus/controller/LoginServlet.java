@@ -94,14 +94,11 @@ public class LoginServlet extends HttpServlet {
                             return;
                         }
 
-                        session.setAttribute("admin_reg_id", admin.getRegId());
-                        session.setAttribute("user_name", admin.getFullName());
+                        session.setAttribute("admin_id", admin.getRegId());
+                        session.setAttribute("admin_name", admin.getFullName());
                         session.setAttribute("role", "ADMIN");
-                        session.setAttribute("user", admin);
+                        session.setMaxInactiveInterval(30 * 60); // 30 mins
 
-//                         IMPORTANT FIX:
-//                         * Redirect to servlet → not direct JSP
-//                         */
                         resp.sendRedirect(ctx + "/admin/dashboard");
                     } else {
                         resp.sendRedirect(ctx + "/views/auth/login.jsp?error=Invalid+Admin+Credentials");
